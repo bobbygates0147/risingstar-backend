@@ -2,6 +2,7 @@ const express = require('express');
 
 const Music = require('../models/Music');
 const Ad = require('../models/Ad');
+const Task = require('../models/Task');
 const TaskCompletion = require('../models/TaskCompletion');
 const { syncAllContent, mapMusicDoc, mapAdDoc } = require('../services/sync-content');
 const { listTasks, seedDummyTasks } = require('../services/task-service');
@@ -9,6 +10,23 @@ const { requireAdmin, requireAuth } = require('../middleware/auth');
 
 const router = express.Router();
 const TASK_TYPES = new Set(['Music', 'Ads', 'Art']);
+const MAX_TASK_REWARD_USD = 1;
+
+function parseEnvInteger(name, fallback, min, max) {
+  const parsed = Number.parseInt(process.env[name] || '', 10);
+
+  if (!Number.isFinite(parsed)) {
+    return fallback;
+  }
+
+  return Math.min(Math.max(parsed, min), max);
+}
+
+const DAILY_LIMIT_BY_TIER = {
+  tier1: parseEnvInteger('DAILY_TASK_LIMIT_TIER1', 8, 1, 100),
+  tier2: parseEnvInteger('DAILY_TASK_LIMIT_TIER2', 12, 1, 120),
+  tier3: parseEnvInteger('DAILY_TASK_LIMIT_TIER3', 16, 1, 150),
+};
 
 function toDayKey(date = new Date()) {
   const year = date.getUTCFullYear();
@@ -33,6 +51,39 @@ function parseDateInput(value) {
 
   const parsed = new Date(value);
   return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
+function resolveSourceTaskId(sessionTaskId, sourceTaskId) {
+  if (sourceTaskId) {
+    return sourceTaskId;
+  }
+
+  const match = /^\d{4}-\d{2}-\d{2}-\d+-(.+)$/.exec(sessionTaskId);
+  return match ? String(match[1] || '').trim() : '';
+}
+
+function resolveTierId(user) {
+  if (user.role === 'admin') {
+    return 'tier3';
+  }
+
+  const normalizedTier = String(user.tier || '')
+    .trim()
+    .toLowerCase();
+
+  if (normalizedTier === 'tier2' || normalizedTier === '2' || normalizedTier === 'tier 2') {
+    return 'tier2';
+  }
+
+  if (normalizedTier === 'tier3' || normalizedTier === '3' || normalizedTier === 'tier 3') {
+    return 'tier3';
+  }
+
+  return 'tier1';
+}
+
+function getDailyLimit(user) {
+  return DAILY_LIMIT_BY_TIER[resolveTierId(user)] || DAILY_LIMIT_BY_TIER.tier1;
 }
 
 function mapCompletionDoc(doc) {
@@ -112,7 +163,7 @@ router.get('/tasks/completions', requireAuth, async (req, res, next) => {
 router.post('/tasks/complete', requireAuth, async (req, res, next) => {
   try {
     const sessionTaskId = String(req.body?.sessionTaskId || '').trim();
-    const sourceTaskId = String(req.body?.sourceTaskId || '').trim();
+    const requestedSourceTaskId = String(req.body?.sourceTaskId || '').trim();
     const title = String(req.body?.title || '').trim();
     const artist = String(req.body?.artist || '').trim();
     const type = String(req.body?.type || '').trim();
@@ -137,7 +188,27 @@ router.post('/tasks/complete', requireAuth, async (req, res, next) => {
       return res.status(400).json({ message: 'Valid reward amount is required' });
     }
 
-    const reward = Number(rewardValue.toFixed(2));
+    const sourceTaskId = resolveSourceTaskId(sessionTaskId, requestedSourceTaskId);
+    const sourceTask = sourceTaskId ? await Task.findOne({ taskId: sourceTaskId }).lean() : null;
+    const fallbackReward = Math.min(MAX_TASK_REWARD_USD, Math.max(0, Number(rewardValue.toFixed(2))));
+    const reward = Number(
+      Math.min(
+        MAX_TASK_REWARD_USD,
+        Math.max(0, Number(sourceTask?.reward ?? fallbackReward))
+      ).toFixed(2)
+    );
+    const normalizedTitle = String(sourceTask?.title || title).trim();
+    const normalizedArtist = String(sourceTask?.artist || artist).trim();
+    const normalizedType = String(sourceTask?.type || type).trim();
+
+    if (!normalizedTitle) {
+      return res.status(400).json({ message: 'Task title is required' });
+    }
+
+    if (!TASK_TYPES.has(normalizedType)) {
+      return res.status(400).json({ message: 'Valid task type is required' });
+    }
+
     const dayKey =
       (isDayKey(requestedDayKey) && requestedDayKey) ||
       resolveDayKeyFromSessionId(sessionTaskId) ||
@@ -159,6 +230,24 @@ router.post('/tasks/complete', requireAuth, async (req, res, next) => {
       });
     }
 
+    const dailyLimit = getDailyLimit(req.user);
+    if (dailyLimit > 0) {
+      const todayCompletionCount = await TaskCompletion.countDocuments({
+        userId: req.user._id,
+        dayKey,
+      });
+
+      if (todayCompletionCount >= dailyLimit) {
+        return res.status(429).json({
+          message: `Daily task quota reached (${dailyLimit} tasks)`,
+          wallet: {
+            balance: Number(req.user.walletBalance || 0),
+            withdrawable: Number(req.user.withdrawableBalance || 0),
+          },
+        });
+      }
+    }
+
     let completion;
 
     try {
@@ -166,9 +255,9 @@ router.post('/tasks/complete', requireAuth, async (req, res, next) => {
         userId: req.user._id,
         sessionTaskId,
         sourceTaskId,
-        title,
-        artist,
-        type,
+        title: normalizedTitle,
+        artist: normalizedArtist,
+        type: normalizedType,
         reward,
         dayKey,
         scheduledAt,

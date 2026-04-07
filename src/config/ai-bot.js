@@ -16,6 +16,11 @@ function getDailyMaxRuns() {
   return parseNonNegativeInteger('AI_BOT_DAILY_MAX_RUNS', 0);
 }
 
+function getSubscriptionMonths() {
+  const value = parseNonNegativeInteger('AI_BOT_SUBSCRIPTION_MONTHS', 1);
+  return value > 0 ? value : 1;
+}
+
 function toDayKey(date = new Date()) {
   const year = date.getUTCFullYear();
   const month = String(date.getUTCMonth() + 1).padStart(2, '0');
@@ -26,5 +31,6 @@ function toDayKey(date = new Date()) {
 module.exports = {
   getCheckpointIntervalMinutes,
   getDailyMaxRuns,
+  getSubscriptionMonths,
   toDayKey,
 };

@@ -1,4 +1,4 @@
-const bcrypt = require('bcryptjs');
+﻿const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const User = require('../models/User');
@@ -29,6 +29,30 @@ function toPublicUser(user) {
     id: String(user._id),
     name: user.name,
     email: user.email,
+    phone: user.phone || '',
+    country: user.country || '',
+    bio: user.bio || '',
+    language: user.language || 'English',
+    timezone: user.timezone || 'Africa/Lagos',
+    avatarUrl: user.avatarUrl || '',
+    notificationSettings: {
+      taskAlerts:
+        typeof user.notificationSettings?.taskAlerts === 'boolean'
+          ? user.notificationSettings.taskAlerts
+          : true,
+      securityAlerts:
+        typeof user.notificationSettings?.securityAlerts === 'boolean'
+          ? user.notificationSettings.securityAlerts
+          : true,
+      payoutAlerts:
+        typeof user.notificationSettings?.payoutAlerts === 'boolean'
+          ? user.notificationSettings.payoutAlerts
+          : true,
+      marketing:
+        typeof user.notificationSettings?.marketing === 'boolean'
+          ? user.notificationSettings.marketing
+          : false,
+    },
     role: user.role,
     walletBalance: Number(user.walletBalance || 0),
     withdrawableBalance: Number(user.withdrawableBalance || 0),
@@ -39,15 +63,23 @@ function toPublicUser(user) {
     registrationPaymentReference: user.registrationPaymentReference || '',
     registrationPaymentAmountUsd: Number(user.registrationPaymentAmountUsd || 0),
     registrationPaidAt: user.registrationPaidAt || null,
+    tierUpgradedAt: user.tierUpgradedAt || null,
+    tierUpgradePaymentMethod: user.tierUpgradePaymentMethod || '',
+    tierUpgradePaymentReference: user.tierUpgradePaymentReference || '',
+    tierUpgradePaymentAmountUsd: Number(user.tierUpgradePaymentAmountUsd || 0),
     aiBotFeeUsd: Number(user.aiBotFeeUsd || 0),
     aiBotEnabled: Boolean(user.aiBotEnabled),
     aiBotPaymentMethod: user.aiBotPaymentMethod || '',
     aiBotPaymentReference: user.aiBotPaymentReference || '',
     aiBotActivatedAt: user.aiBotActivatedAt || null,
+    aiBotExpiresAt: user.aiBotExpiresAt || null,
+    aiBotSubscriptionMonths: Number(user.aiBotSubscriptionMonths || 1),
     aiBotLastCheckpointAt: user.aiBotLastCheckpointAt || null,
     aiBotNextCheckpointAt: user.aiBotNextCheckpointAt || null,
     aiBotDailyRunsDate: user.aiBotDailyRunsDate || '',
     aiBotDailyRunsCount: Number(user.aiBotDailyRunsCount || 0),
+    createdAt: user.createdAt || null,
+    updatedAt: user.updatedAt || null,
   };
 }
 
@@ -85,6 +117,18 @@ async function ensureAdminUser() {
     admin = await User.create({
       name: 'Platform Admin',
       email: adminEmail,
+      phone: '',
+      country: '',
+      bio: '',
+      language: 'English',
+      timezone: 'Africa/Lagos',
+      avatarUrl: '',
+      notificationSettings: {
+        taskAlerts: true,
+        securityAlerts: true,
+        payoutAlerts: true,
+        marketing: false,
+      },
       passwordHash,
       role: 'admin',
       walletBalance: 0,
@@ -96,11 +140,17 @@ async function ensureAdminUser() {
       registrationPaymentReference: '',
       registrationPaymentAmountUsd: 0,
       registrationPaidAt: null,
+      tierUpgradedAt: null,
+      tierUpgradePaymentMethod: null,
+      tierUpgradePaymentReference: '',
+      tierUpgradePaymentAmountUsd: 0,
       aiBotFeeUsd: 0,
       aiBotEnabled: false,
       aiBotPaymentMethod: null,
       aiBotPaymentReference: '',
       aiBotActivatedAt: null,
+      aiBotExpiresAt: null,
+      aiBotSubscriptionMonths: 1,
       aiBotLastCheckpointAt: null,
       aiBotNextCheckpointAt: null,
       aiBotDailyRunsDate: '',
@@ -199,6 +249,18 @@ async function registerUser({
   const user = await User.create({
     name: cleanName,
     email: cleanEmail,
+    phone: '',
+    country: '',
+    bio: '',
+    language: 'English',
+    timezone: 'Africa/Lagos',
+    avatarUrl: '',
+    notificationSettings: {
+      taskAlerts: true,
+      securityAlerts: true,
+      payoutAlerts: true,
+      marketing: false,
+    },
     passwordHash,
     role: 'user',
     walletBalance: 0,
@@ -210,11 +272,17 @@ async function registerUser({
     registrationPaymentReference: cleanPaymentReference,
     registrationPaymentAmountUsd: providedAmount,
     registrationPaidAt: new Date(),
+    tierUpgradedAt: null,
+    tierUpgradePaymentMethod: null,
+    tierUpgradePaymentReference: '',
+    tierUpgradePaymentAmountUsd: 0,
     aiBotFeeUsd: signupPricing.aiBotFeeUsd,
     aiBotEnabled: false,
     aiBotPaymentMethod: null,
     aiBotPaymentReference: '',
     aiBotActivatedAt: null,
+    aiBotExpiresAt: null,
+    aiBotSubscriptionMonths: 1,
     aiBotLastCheckpointAt: null,
     aiBotNextCheckpointAt: null,
     aiBotDailyRunsDate: '',

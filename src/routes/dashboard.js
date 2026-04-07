@@ -160,17 +160,26 @@ function sumRewards(completions) {
 
 function buildDashboardSummary(user, todayCompletions, weeklyCompletions) {
   const dailyLimit = getDailyLimit(user);
-  const todayEarnings = sumRewards(todayCompletions);
+  const effectiveTodayCompletions =
+    dailyLimit > 0 ? todayCompletions.slice(0, dailyLimit) : todayCompletions;
+  const todayEarnings = sumRewards(effectiveTodayCompletions);
   const weeklyEarnings = sumRewards(weeklyCompletions);
   const completionRate =
-    dailyLimit > 0 ? Math.min(100, Math.round((todayCompletions.length / dailyLimit) * 100)) : 0;
+    dailyLimit > 0
+      ? Math.min(100, Math.round((effectiveTodayCompletions.length / dailyLimit) * 100))
+      : 0;
 
+  const expiresAtMs = user.aiBotExpiresAt ? new Date(user.aiBotExpiresAt).getTime() : Number.NaN;
+  const subscriptionActive = Number.isFinite(expiresAtMs) && expiresAtMs > Date.now();
   const checkpointRequired =
     Boolean(user.aiBotEnabled) &&
+    subscriptionActive &&
     (!user.aiBotNextCheckpointAt ||
       new Date(user.aiBotNextCheckpointAt).getTime() <= Date.now());
 
-  const aiBotStatus = user.aiBotEnabled
+  const aiBotStatus = user.aiBotEnabled && !subscriptionActive
+    ? 'Expired'
+    : user.aiBotEnabled
     ? checkpointRequired
       ? 'Checkpoint Required'
       : 'Active'
@@ -184,7 +193,7 @@ function buildDashboardSummary(user, todayCompletions, weeklyCompletions) {
     dailyLimit,
     streak: Number(user.streak || 0),
     taskCompletionRate: completionRate,
-    activeQueue: Math.max(0, dailyLimit - todayCompletions.length),
+    activeQueue: Math.max(0, dailyLimit - effectiveTodayCompletions.length),
     currentTier: user.tier || 'Tier 1',
     nextTier: getNextTierLabel(user),
     tierProgress: Math.min(92, Math.max(12, completionRate)),

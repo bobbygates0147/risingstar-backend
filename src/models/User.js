@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+﻿const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema(
   {
@@ -10,6 +10,18 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
       index: true,
+    },
+    phone: { type: String, default: '', trim: true },
+    country: { type: String, default: '', trim: true },
+    bio: { type: String, default: '', trim: true, maxlength: 320 },
+    language: { type: String, default: 'English', trim: true },
+    timezone: { type: String, default: 'Africa/Lagos', trim: true },
+    avatarUrl: { type: String, default: '', trim: true },
+    notificationSettings: {
+      taskAlerts: { type: Boolean, default: true },
+      securityAlerts: { type: Boolean, default: true },
+      payoutAlerts: { type: Boolean, default: true },
+      marketing: { type: Boolean, default: false },
     },
     passwordHash: { type: String, required: true },
     role: {
@@ -31,6 +43,14 @@ const userSchema = new mongoose.Schema(
     registrationPaymentReference: { type: String, default: '' },
     registrationPaymentAmountUsd: { type: Number, default: 0 },
     registrationPaidAt: { type: Date, default: null },
+    tierUpgradedAt: { type: Date, default: null },
+    tierUpgradePaymentMethod: {
+      type: String,
+      enum: ['bank_transfer', 'paypal', 'crypto'],
+      default: null,
+    },
+    tierUpgradePaymentReference: { type: String, default: '' },
+    tierUpgradePaymentAmountUsd: { type: Number, default: 0 },
     aiBotFeeUsd: { type: Number, default: 0 },
     aiBotEnabled: { type: Boolean, default: false },
     aiBotPaymentMethod: {
@@ -40,6 +60,8 @@ const userSchema = new mongoose.Schema(
     },
     aiBotPaymentReference: { type: String, default: '' },
     aiBotActivatedAt: { type: Date, default: null },
+    aiBotExpiresAt: { type: Date, default: null },
+    aiBotSubscriptionMonths: { type: Number, default: 1 },
     aiBotLastCheckpointAt: { type: Date, default: null },
     aiBotNextCheckpointAt: { type: Date, default: null },
     aiBotDailyRunsDate: { type: String, default: '' },
