@@ -7,6 +7,13 @@ const {
   toDayKey,
 } = require('../config/ai-bot');
 const {
+  addMonths,
+  ensureAIBotSubscriptionState,
+  getAIBotSubscriptionState,
+  getNextCheckpointDate,
+  requiresAIBotCheckpoint,
+} = require('../services/ai-bot-status');
+const {
   getSignupPricingConfig,
   isSupportedPaymentMethod,
   normalizePaymentMethod,
@@ -16,51 +23,6 @@ const { requireAuth } = require('../middleware/auth');
 const { toPublicUser } = require('../services/auth-service');
 
 const router = express.Router();
-
-function getNextCheckpointDate(fromDate = new Date()) {
-  const intervalMinutes = getCheckpointIntervalMinutes();
-  return new Date(fromDate.getTime() + intervalMinutes * 60 * 1000);
-}
-
-function addMonths(fromDate = new Date(), months = 1) {
-  const safeMonths = Number.isFinite(months) && months > 0 ? Math.floor(months) : 1;
-  const next = new Date(fromDate);
-  next.setMonth(next.getMonth() + safeMonths);
-  return next;
-}
-
-function getSubscriptionState(user, now = new Date()) {
-  const activatedAt = user.aiBotActivatedAt ? new Date(user.aiBotActivatedAt) : null;
-  const expiresAt = user.aiBotExpiresAt ? new Date(user.aiBotExpiresAt) : null;
-  const activatedAtMs = activatedAt && Number.isFinite(activatedAt.getTime()) ? activatedAt.getTime() : null;
-  const expiresAtMs = expiresAt && Number.isFinite(expiresAt.getTime()) ? expiresAt.getTime() : null;
-  const hasPurchased = Boolean(activatedAtMs);
-  const active = Boolean(hasPurchased && expiresAtMs && expiresAtMs > now.getTime());
-  const expired = Boolean(hasPurchased && expiresAtMs && expiresAtMs <= now.getTime());
-  const remainingDays = active && expiresAtMs
-    ? Math.max(0, Math.ceil((expiresAtMs - now.getTime()) / (24 * 60 * 60 * 1000)))
-    : 0;
-
-  return {
-    months: Number(user.aiBotSubscriptionMonths || getSubscriptionMonths()),
-    hasPurchased,
-    active,
-    expired,
-    remainingDays,
-    expiresAt: expiresAtMs ? new Date(expiresAtMs) : null,
-  };
-}
-
-function syncSubscriptionState(user, now = new Date()) {
-  const subscription = getSubscriptionState(user, now);
-
-  if (subscription.expired && user.aiBotEnabled) {
-    user.aiBotEnabled = false;
-    return true;
-  }
-
-  return false;
-}
 
 function getPaymentConfig() {
   const signupConfig = getSignupPricingConfig();
@@ -84,25 +46,16 @@ function normalizeDailyRuns(user) {
 }
 
 function requiresCheckpoint(user) {
-  const subscription = getSubscriptionState(user);
-  if (!user.aiBotEnabled || !subscription.active) {
-    return false;
-  }
-
-  if (!user.aiBotNextCheckpointAt) {
-    return true;
-  }
-
-  return new Date(user.aiBotNextCheckpointAt).getTime() <= Date.now();
+  return requiresAIBotCheckpoint(user);
 }
 
 function buildBotStatus(user) {
   const now = new Date();
-  const subscription = getSubscriptionState(user, now);
+  const subscription = getAIBotSubscriptionState(user, now);
   const maxRuns = getDailyMaxRuns();
   const usageCount = Number(user.aiBotDailyRunsCount || 0);
   const usagePercent = maxRuns > 0 ? Math.min(100, Math.round((usageCount / maxRuns) * 100)) : 0;
-  const checkpointRequired = requiresCheckpoint(user);
+  const checkpointRequired = requiresAIBotCheckpoint(user, now);
   const enabled = Boolean(user.aiBotEnabled) && subscription.active;
 
   return {
@@ -138,7 +91,7 @@ router.get('/config', requireAuth, (req, res) => {
 
 router.get('/status', requireAuth, async (req, res, next) => {
   try {
-    const changed = syncSubscriptionState(req.user);
+    const changed = ensureAIBotSubscriptionState(req.user);
     normalizeDailyRuns(req.user);
     if (changed || req.user.isModified()) {
       await req.user.save();
@@ -210,7 +163,7 @@ router.post('/activate', requireAuth, async (req, res, next) => {
 
 router.post('/checkpoint', requireAuth, async (req, res, next) => {
   try {
-    const changed = syncSubscriptionState(req.user);
+    const changed = ensureAIBotSubscriptionState(req.user);
 
     if (!req.user.aiBotEnabled) {
       if (changed) {
@@ -219,7 +172,7 @@ router.post('/checkpoint', requireAuth, async (req, res, next) => {
       return res.status(400).json({ message: 'AI Bot is not active for this account' });
     }
 
-    if (!getSubscriptionState(req.user).active) {
+    if (!getAIBotSubscriptionState(req.user).active) {
       await req.user.save();
       return res.status(402).json({ message: 'AI Bot subscription expired. Renew to continue.' });
     }
@@ -242,13 +195,13 @@ router.post('/checkpoint', requireAuth, async (req, res, next) => {
 router.post('/toggle', requireAuth, async (req, res, next) => {
   try {
     const enabled = Boolean(req.body?.enabled);
-    syncSubscriptionState(req.user);
+    ensureAIBotSubscriptionState(req.user);
 
     if (!req.user.aiBotActivatedAt) {
       return res.status(400).json({ message: 'Activate AI Bot before changing auto mode' });
     }
 
-    if (enabled && !getSubscriptionState(req.user).active) {
+    if (enabled && !getAIBotSubscriptionState(req.user).active) {
       await req.user.save();
       return res.status(402).json({ message: 'AI Bot subscription expired. Renew to continue.' });
     }
@@ -274,13 +227,13 @@ router.post('/toggle', requireAuth, async (req, res, next) => {
 
 router.post('/run-daily', requireAuth, async (req, res, next) => {
   try {
-    syncSubscriptionState(req.user);
+    ensureAIBotSubscriptionState(req.user);
 
     if (!req.user.aiBotEnabled) {
       return res.status(400).json({ message: 'Activate AI Bot before running automation' });
     }
 
-    if (!getSubscriptionState(req.user).active) {
+    if (!getAIBotSubscriptionState(req.user).active) {
       await req.user.save();
       return res.status(402).json({
         message: 'AI Bot subscription expired. Renew to continue.',

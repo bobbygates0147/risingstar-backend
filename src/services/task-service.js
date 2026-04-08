@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const Task = require('../models/Task');
+const { getCloudinaryUrl, getMappedUrlsByFolder } = require('./cloudinary-media-map');
 
 const musicArtists = [
   'Nova Kade',
@@ -59,6 +60,27 @@ function toPublicAssetPath(folder, fileName) {
   return `/${folder}/${encodeURIComponent(fileName)}`;
 }
 
+function toTaskAssetPath(folder, fileName) {
+  return getCloudinaryUrl(toPublicAssetPath(folder, fileName));
+}
+
+function mapMediaValue(value) {
+  if (!value || typeof value !== 'string') {
+    return '';
+  }
+
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return '';
+  }
+
+  if (/^https?:\/\//i.test(trimmed)) {
+    return trimmed;
+  }
+
+  return getCloudinaryUrl(trimmed);
+}
+
 function toDuration(totalSeconds) {
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
@@ -85,23 +107,46 @@ function pickAdCover(images) {
   const preferred = images.filter((value) => /\/mc2[0-5]\./i.test(value));
 
   if (preferred.length >= 3) {
-    return preferred.slice(0, 3).map((fileName) => toPublicAssetPath('images', fileName));
+    return preferred.slice(0, 3).map((fileName) => toTaskAssetPath('images', fileName));
   }
 
   if (images.length >= 3) {
-    return images.slice(0, 3).map((fileName) => toPublicAssetPath('images', fileName));
+    return images.slice(0, 3).map((fileName) => toTaskAssetPath('images', fileName));
   }
 
-  return ['/images/mc20.jpg', '/images/mc21.webp', '/images/mc22.webp'];
+  return [
+    getCloudinaryUrl('/images/mc20.jpg'),
+    getCloudinaryUrl('/images/mc21.webp'),
+    getCloudinaryUrl('/images/mc22.webp'),
+  ];
 }
 
 function listAdMediaUrls() {
+  const mapped = getMappedUrlsByFolder('ads');
+  if (mapped.length > 0) {
+    return mapped;
+  }
+
   const publicDir = getFrontendPublicDir();
   const adVideoFiles = safeListFiles(path.join(publicDir, 'ads')).filter((fileName) =>
     /\.(mp4|mov|mkv|webm|avi)$/i.test(fileName)
   );
 
-  return adVideoFiles.map((fileName) => toPublicAssetPath('ads', fileName));
+  return adVideoFiles.map((fileName) => toTaskAssetPath('ads', fileName));
+}
+
+function listMusicMediaUrls() {
+  const mapped = getMappedUrlsByFolder('musiclist');
+  if (mapped.length > 0) {
+    return mapped;
+  }
+
+  const publicDir = getFrontendPublicDir();
+  const musicAudioFiles = safeListFiles(path.join(publicDir, 'musiclist')).filter((fileName) =>
+    /\.(mp3|m4a|wav|ogg|aac)$/i.test(fileName)
+  );
+
+  return musicAudioFiles.map((fileName) => toTaskAssetPath('musiclist', fileName));
 }
 
 function buildDummyTasks() {
@@ -111,13 +156,32 @@ function buildDummyTasks() {
   const adVideoFiles = safeListFiles(path.join(publicDir, 'ads')).filter((fileName) =>
     /\.(mp4|mov|mkv|webm|avi)$/i.test(fileName)
   );
+  const musicAudioFiles = safeListFiles(path.join(publicDir, 'musiclist')).filter((fileName) =>
+    /\.(mp3|m4a|wav|ogg|aac)$/i.test(fileName)
+  );
+
+  const imageCoverUrls = imageFiles.length > 0
+    ? imageFiles.map((fileName) => toTaskAssetPath('images', fileName))
+    : getMappedUrlsByFolder('images');
+  const artCoverUrls = artFiles.length > 0
+    ? artFiles.map((fileName) => toTaskAssetPath('arts', fileName))
+    : getMappedUrlsByFolder('arts');
+  const adMediaUrls = adVideoFiles.length > 0
+    ? adVideoFiles.map((fileName) => toTaskAssetPath('ads', fileName))
+    : getMappedUrlsByFolder('ads');
+  const musicMediaUrls = musicAudioFiles.length > 0
+    ? musicAudioFiles.map((fileName) => toTaskAssetPath('musiclist', fileName))
+    : getMappedUrlsByFolder('musiclist');
 
   const adCovers = pickAdCover(imageFiles);
   const tasks = [];
   let sortOrder = 1;
 
-  imageFiles.forEach((fileName, index) => {
+  imageCoverUrls.forEach((coverImage, index) => {
     const sessionNo = index + 1;
+    const musicMedia = musicMediaUrls.length > 0
+      ? musicMediaUrls[index % musicMediaUrls.length]
+      : '';
 
     tasks.push({
       taskId: `music-${sessionNo}`,
@@ -129,8 +193,8 @@ function buildDummyTasks() {
       type: 'Music',
       status: statusFromIndex(index),
       mood: musicMoods[index % musicMoods.length],
-      coverImage: toPublicAssetPath('images', fileName),
-      mediaUrl: '',
+      coverImage,
+      mediaUrl: musicMedia,
       reach: reachFromIndex(index),
       engagement: engagementFromIndex(index + 2),
     });
@@ -138,9 +202,9 @@ function buildDummyTasks() {
     sortOrder += 1;
   });
 
-  artFiles.forEach((fileName, index) => {
+  artCoverUrls.forEach((coverImage, index) => {
     const sessionNo = index + 1;
-    const globalIndex = imageFiles.length + index;
+    const globalIndex = imageCoverUrls.length + index;
 
     tasks.push({
       taskId: `art-${sessionNo}`,
@@ -152,7 +216,7 @@ function buildDummyTasks() {
       type: 'Art',
       status: statusFromIndex(globalIndex),
       mood: artMoods[index % artMoods.length],
-      coverImage: toPublicAssetPath('arts', fileName),
+      coverImage,
       mediaUrl: '',
       reach: reachFromIndex(globalIndex),
       engagement: engagementFromIndex(globalIndex + 1),
@@ -161,15 +225,12 @@ function buildDummyTasks() {
     sortOrder += 1;
   });
 
-  const adCount = Math.max(3, adVideoFiles.length || 0);
+  const adCount = Math.max(3, adMediaUrls.length || 0);
 
   for (let index = 0; index < adCount; index += 1) {
     const sessionNo = index + 1;
-    const globalIndex = imageFiles.length + artFiles.length + index;
-    const mediaUrl =
-      adVideoFiles.length > 0
-        ? toPublicAssetPath('ads', adVideoFiles[index % adVideoFiles.length])
-        : '';
+    const globalIndex = imageCoverUrls.length + artCoverUrls.length + index;
+    const mediaUrl = adMediaUrls.length > 0 ? adMediaUrls[index % adMediaUrls.length] : '';
 
     tasks.push({
       taskId: `ad-${sessionNo}`,
@@ -214,6 +275,9 @@ async function seedDummyTasks() {
 }
 
 function mapTaskDoc(doc) {
+  const mappedCoverImage = mapMediaValue(doc.coverImage);
+  const mappedMediaUrl = mapMediaValue(doc.mediaUrl);
+
   return {
     id: doc.taskId,
     title: doc.title,
@@ -223,8 +287,8 @@ function mapTaskDoc(doc) {
     type: doc.type,
     status: doc.status,
     mood: doc.mood,
-    coverImage: doc.coverImage,
-    mediaUrl: doc.mediaUrl || undefined,
+    coverImage: mappedCoverImage || doc.coverImage,
+    mediaUrl: mappedMediaUrl || undefined,
     reach: doc.reach,
     engagement: doc.engagement,
     createdAt: doc.createdAt,
@@ -255,21 +319,37 @@ function buildGeneratedAdTask(index, mediaUrl, fallbackCover) {
 async function listTasks() {
   const tasks = await Task.find().sort({ sortOrder: 1, createdAt: 1 }).lean();
   const adMediaUrls = listAdMediaUrls();
-  const mappedTasks = tasks.map((task) => {
-    if (task.type !== 'Ads' || adMediaUrls.length === 0) {
-      return mapTaskDoc(task);
+  const musicMediaUrls = listMusicMediaUrls();
+  const mappedTasks = tasks.map((task) => mapTaskDoc(task));
+
+  let musicMediaCursor = 0;
+  const withMusicMedia = mappedTasks.map((task) => {
+    if (task.type !== 'Music') {
+      return task;
     }
 
-    const mapped = mapTaskDoc(task);
-    return mapped;
+    const fallbackMedia =
+      musicMediaUrls.length > 0
+        ? musicMediaUrls[musicMediaCursor % musicMediaUrls.length]
+        : '';
+    musicMediaCursor += 1;
+
+    if (task.mediaUrl || !fallbackMedia) {
+      return task;
+    }
+
+    return {
+      ...task,
+      mediaUrl: fallbackMedia,
+    };
   });
 
   if (adMediaUrls.length === 0) {
-    return mappedTasks;
+    return withMusicMedia;
   }
 
-  const adTasks = mappedTasks.filter((task) => task.type === 'Ads');
-  const fallbackCover = adTasks[0]?.coverImage || '/images/mc20.jpg';
+  const adTasks = withMusicMedia.filter((task) => task.type === 'Ads');
+  const fallbackCover = adTasks[0]?.coverImage || getCloudinaryUrl('/images/mc20.jpg');
 
   // Ensure every discovered ad file is represented by at least one ad task response.
   const normalizedAdTasks = adMediaUrls.map((mediaUrl, index) => {
@@ -283,7 +363,7 @@ async function listTasks() {
     return buildGeneratedAdTask(index, mediaUrl, fallbackCover);
   });
 
-  const nonAdTasks = mappedTasks.filter((task) => task.type !== 'Ads');
+  const nonAdTasks = withMusicMedia.filter((task) => task.type !== 'Ads');
   return [...nonAdTasks, ...normalizedAdTasks];
 }
 

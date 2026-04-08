@@ -23,6 +23,22 @@ const withdrawalRequestSchema = new mongoose.Schema(
       default: '',
       trim: true,
     },
+    network: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    walletAddress: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    memo: {
+      type: String,
+      default: '',
+      trim: true,
+      maxlength: 180,
+    },
     status: {
       type: String,
       enum: ['pending', 'approved', 'rejected'],

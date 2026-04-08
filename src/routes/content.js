@@ -22,10 +22,27 @@ function parseEnvInteger(name, fallback, min, max) {
   return Math.min(Math.max(parsed, min), max);
 }
 
+function parseEnvFloat(name, fallback, min, max) {
+  const parsed = Number.parseFloat(process.env[name] || '');
+
+  if (!Number.isFinite(parsed)) {
+    return fallback;
+  }
+
+  return Math.min(Math.max(parsed, min), max);
+}
+
 const DAILY_LIMIT_BY_TIER = {
   tier1: parseEnvInteger('DAILY_TASK_LIMIT_TIER1', 8, 1, 100),
   tier2: parseEnvInteger('DAILY_TASK_LIMIT_TIER2', 12, 1, 120),
   tier3: parseEnvInteger('DAILY_TASK_LIMIT_TIER3', 16, 1, 150),
+};
+const DEPOSIT_EXTRA_TASKS_MAX = parseEnvInteger('DEPOSIT_EXTRA_TASKS_MAX', 200, 0, 2000);
+
+const TASK_REWARD_MULTIPLIER_BY_TIER = {
+  tier1: parseEnvFloat('TASK_REWARD_MULTIPLIER_TIER1', 0.55, 0.1, 2),
+  tier2: parseEnvFloat('TASK_REWARD_MULTIPLIER_TIER2', 0.8, 0.1, 2),
+  tier3: parseEnvFloat('TASK_REWARD_MULTIPLIER_TIER3', 1, 0.1, 2),
 };
 
 function toDayKey(date = new Date()) {
@@ -83,7 +100,24 @@ function resolveTierId(user) {
 }
 
 function getDailyLimit(user) {
-  return DAILY_LIMIT_BY_TIER[resolveTierId(user)] || DAILY_LIMIT_BY_TIER.tier1;
+  const tierLimit = DAILY_LIMIT_BY_TIER[resolveTierId(user)] || DAILY_LIMIT_BY_TIER.tier1;
+  const extraTaskSlots = Math.max(
+    0,
+    Math.min(
+      DEPOSIT_EXTRA_TASKS_MAX,
+      Number.parseInt(String(user.extraTaskSlots || 0), 10) || 0
+    )
+  );
+
+  return tierLimit + extraTaskSlots;
+}
+
+function resolveRewardForTier(baseReward, user) {
+  const tierId = resolveTierId(user);
+  const multiplier = TASK_REWARD_MULTIPLIER_BY_TIER[tierId] || 1;
+  const normalizedBase = Math.max(0, Number(baseReward || 0));
+  const scaled = normalizedBase * multiplier;
+  return Number(Math.min(MAX_TASK_REWARD_USD, scaled).toFixed(2));
 }
 
 function mapCompletionDoc(doc) {
@@ -191,12 +225,7 @@ router.post('/tasks/complete', requireAuth, async (req, res, next) => {
     const sourceTaskId = resolveSourceTaskId(sessionTaskId, requestedSourceTaskId);
     const sourceTask = sourceTaskId ? await Task.findOne({ taskId: sourceTaskId }).lean() : null;
     const fallbackReward = Math.min(MAX_TASK_REWARD_USD, Math.max(0, Number(rewardValue.toFixed(2))));
-    const reward = Number(
-      Math.min(
-        MAX_TASK_REWARD_USD,
-        Math.max(0, Number(sourceTask?.reward ?? fallbackReward))
-      ).toFixed(2)
-    );
+    const reward = resolveRewardForTier(Number(sourceTask?.reward ?? fallbackReward), req.user);
     const normalizedTitle = String(sourceTask?.title || title).trim();
     const normalizedArtist = String(sourceTask?.artist || artist).trim();
     const normalizedType = String(sourceTask?.type || type).trim();

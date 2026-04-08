@@ -1,6 +1,10 @@
 const express = require('express');
 
 const { getCheckpointIntervalMinutes } = require('../config/ai-bot');
+const {
+  ensureAIBotSubscriptionState,
+  getAIBotStatusLabel,
+} = require('../services/ai-bot-status');
 const TaskCompletion = require('../models/TaskCompletion');
 const { requireAuth } = require('../middleware/auth');
 
@@ -23,6 +27,7 @@ const DAILY_LIMIT_BY_TIER = {
   tier2: parseEnvInteger('DAILY_TASK_LIMIT_TIER2', 12, 1, 120),
   tier3: parseEnvInteger('DAILY_TASK_LIMIT_TIER3', 16, 1, 150),
 };
+const DEPOSIT_EXTRA_TASKS_MAX = parseEnvInteger('DEPOSIT_EXTRA_TASKS_MAX', 200, 0, 2000);
 
 function resolveTierId(user) {
   if (user.role === 'admin') {
@@ -45,7 +50,16 @@ function resolveTierId(user) {
 }
 
 function getDailyLimit(user) {
-  return DAILY_LIMIT_BY_TIER[resolveTierId(user)] || DAILY_LIMIT_BY_TIER.tier1;
+  const tierLimit = DAILY_LIMIT_BY_TIER[resolveTierId(user)] || DAILY_LIMIT_BY_TIER.tier1;
+  const extraTaskSlots = Math.max(
+    0,
+    Math.min(
+      DEPOSIT_EXTRA_TASKS_MAX,
+      Number.parseInt(String(user.extraTaskSlots || 0), 10) || 0
+    )
+  );
+
+  return tierLimit + extraTaskSlots;
 }
 
 function getNextTierLabel(user) {
@@ -169,21 +183,7 @@ function buildDashboardSummary(user, todayCompletions, weeklyCompletions) {
       ? Math.min(100, Math.round((effectiveTodayCompletions.length / dailyLimit) * 100))
       : 0;
 
-  const expiresAtMs = user.aiBotExpiresAt ? new Date(user.aiBotExpiresAt).getTime() : Number.NaN;
-  const subscriptionActive = Number.isFinite(expiresAtMs) && expiresAtMs > Date.now();
-  const checkpointRequired =
-    Boolean(user.aiBotEnabled) &&
-    subscriptionActive &&
-    (!user.aiBotNextCheckpointAt ||
-      new Date(user.aiBotNextCheckpointAt).getTime() <= Date.now());
-
-  const aiBotStatus = user.aiBotEnabled && !subscriptionActive
-    ? 'Expired'
-    : user.aiBotEnabled
-    ? checkpointRequired
-      ? 'Checkpoint Required'
-      : 'Active'
-    : 'Inactive';
+  const aiBotStatus = getAIBotStatusLabel(user, new Date());
 
   return {
     balance: Number(user.walletBalance || 0),
@@ -244,6 +244,10 @@ function buildActivityLog(completions) {
 router.get('/dashboard', requireAuth, async (req, res, next) => {
   try {
     const now = new Date();
+    const aiStateChanged = ensureAIBotSubscriptionState(req.user, now);
+    if (aiStateChanged || req.user.isModified()) {
+      await req.user.save();
+    }
     const startTodayAt = startOfToday(now);
     const startWeekAt = startOfWeek(now);
 

@@ -7,6 +7,7 @@ const {
   registerUser,
   toPublicUser,
 } = require('../services/auth-service');
+const { ensureAIBotSubscriptionState } = require('../services/ai-bot-status');
 const { requireAuth } = require('../middleware/auth');
 
 const router = express.Router();
@@ -44,6 +45,12 @@ router.post('/signup', async (req, res, next) => {
 router.post('/login', async (req, res, next) => {
   try {
     const user = await loginUser(req.body || {});
+    const changed = ensureAIBotSubscriptionState(user, new Date());
+
+    if (changed || user.isModified()) {
+      await user.save();
+    }
+
     res.json(createAuthResponse(user));
   } catch (error) {
     if (error.message === 'Invalid email or password') {
@@ -58,8 +65,18 @@ router.post('/login', async (req, res, next) => {
   }
 });
 
-router.get('/me', requireAuth, async (req, res) => {
-  res.json({ user: toPublicUser(req.user) });
+router.get('/me', requireAuth, async (req, res, next) => {
+  try {
+    const changed = ensureAIBotSubscriptionState(req.user, new Date());
+
+    if (changed || req.user.isModified()) {
+      await req.user.save();
+    }
+
+    res.json({ user: toPublicUser(req.user) });
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = router;

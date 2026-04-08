@@ -1,0 +1,995 @@
+{
+  "provider": "cloudinary",
+  "cloudName": "dzd5sq3r2",
+  "folder": "risingstar",
+  "updatedAt": "2026-04-08T11:14:25.392Z",
+  "assets": {
+    "/images/mc1.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775641618/risingstar/images/mc1-a62c2b8c9e.jpg",
+      "publicId": "risingstar/images/mc1-a62c2b8c9e",
+      "resourceType": "image",
+      "bytes": 699211,
+      "uploadedAt": "2026-04-08T10:19:06.181Z"
+    },
+    "/images/mc2.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775641627/risingstar/images/mc2-8ed58049a4.jpg",
+      "publicId": "risingstar/images/mc2-8ed58049a4",
+      "resourceType": "image",
+      "bytes": 109937,
+      "uploadedAt": "2026-04-08T10:19:07.855Z"
+    },
+    "/images/mc3.webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775641629/risingstar/images/mc3-a699c07ba8.webp",
+      "publicId": "risingstar/images/mc3-a699c07ba8",
+      "resourceType": "image",
+      "bytes": 51700,
+      "uploadedAt": "2026-04-08T10:19:09.186Z"
+    },
+    "/images/mc4.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775641647/risingstar/images/mc4-342675f2fb.jpg",
+      "publicId": "risingstar/images/mc4-342675f2fb",
+      "resourceType": "image",
+      "bytes": 370847,
+      "uploadedAt": "2026-04-08T10:19:13.847Z"
+    },
+    "/images/mc5.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775641653/risingstar/images/mc5-c1d6929be7.jpg",
+      "publicId": "risingstar/images/mc5-c1d6929be7",
+      "resourceType": "image",
+      "bytes": 101480,
+      "uploadedAt": "2026-04-08T10:19:15.242Z"
+    },
+    "/images/mc6.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775641665/risingstar/images/mc6-809c13d4f6.jpg",
+      "publicId": "risingstar/images/mc6-809c13d4f6",
+      "resourceType": "image",
+      "bytes": 130406,
+      "uploadedAt": "2026-04-08T10:19:16.405Z"
+    },
+    "/images/mc7.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775641683/risingstar/images/mc7-e9db41604e.jpg",
+      "publicId": "risingstar/images/mc7-e9db41604e",
+      "resourceType": "image",
+      "bytes": 291386,
+      "uploadedAt": "2026-04-08T10:19:19.375Z"
+    },
+    "/images/mc8.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775641691/risingstar/images/mc8-72f21767b1.jpg",
+      "publicId": "risingstar/images/mc8-72f21767b1",
+      "resourceType": "image",
+      "bytes": 104118,
+      "uploadedAt": "2026-04-08T10:19:21.179Z"
+    },
+    "/images/mc9.webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775641721/risingstar/images/mc9-80645c3d92.webp",
+      "publicId": "risingstar/images/mc9-80645c3d92",
+      "resourceType": "image",
+      "bytes": 444286,
+      "uploadedAt": "2026-04-08T10:19:27.139Z"
+    },
+    "/images/mc10.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775641743/risingstar/images/mc10-56c1aefb26.jpg",
+      "publicId": "risingstar/images/mc10-56c1aefb26",
+      "resourceType": "image",
+      "bytes": 186788,
+      "uploadedAt": "2026-04-08T10:19:30.762Z"
+    },
+    "/images/mc11.webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775641756/risingstar/images/mc11-cc6f3952bf.webp",
+      "publicId": "risingstar/images/mc11-cc6f3952bf",
+      "resourceType": "image",
+      "bytes": 174478,
+      "uploadedAt": "2026-04-08T10:19:35.100Z"
+    },
+    "/images/mc12.webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775641759/risingstar/images/mc12-e44fd60b65.webp",
+      "publicId": "risingstar/images/mc12-e44fd60b65",
+      "resourceType": "image",
+      "bytes": 32416,
+      "uploadedAt": "2026-04-08T10:19:36.555Z"
+    },
+    "/images/mc13.webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775641764/risingstar/images/mc13-0dff1c6bd9.webp",
+      "publicId": "risingstar/images/mc13-0dff1c6bd9",
+      "resourceType": "image",
+      "bytes": 61520,
+      "uploadedAt": "2026-04-08T10:19:38.603Z"
+    },
+    "/images/mc14.avif": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775641772/risingstar/images/mc14-bbb543cafc.avif",
+      "publicId": "risingstar/images/mc14-bbb543cafc",
+      "resourceType": "image",
+      "bytes": 107635,
+      "uploadedAt": "2026-04-08T10:19:42.724Z"
+    },
+    "/images/mc15.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775641786/risingstar/images/mc15-f4aee9527a.jpg",
+      "publicId": "risingstar/images/mc15-f4aee9527a",
+      "resourceType": "image",
+      "bytes": 150273,
+      "uploadedAt": "2026-04-08T10:19:46.336Z"
+    },
+    "/images/mc16.webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775641788/risingstar/images/mc16-be231e8e6f.webp",
+      "publicId": "risingstar/images/mc16-be231e8e6f",
+      "resourceType": "image",
+      "bytes": 6414,
+      "uploadedAt": "2026-04-08T10:19:47.941Z"
+    },
+    "/images/mc17.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775641802/risingstar/images/mc17-2444c16325.jpg",
+      "publicId": "risingstar/images/mc17-2444c16325",
+      "resourceType": "image",
+      "bytes": 174746,
+      "uploadedAt": "2026-04-08T10:19:50.896Z"
+    },
+    "/images/mc18.webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775641804/risingstar/images/mc18-548acb5988.webp",
+      "publicId": "risingstar/images/mc18-548acb5988",
+      "resourceType": "image",
+      "bytes": 9802,
+      "uploadedAt": "2026-04-08T10:19:52.147Z"
+    },
+    "/images/mc19.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775641813/risingstar/images/mc19-b6a0097c98.jpg",
+      "publicId": "risingstar/images/mc19-b6a0097c98",
+      "resourceType": "image",
+      "bytes": 163500,
+      "uploadedAt": "2026-04-08T10:19:54.335Z"
+    },
+    "/images/mc20.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775641836/risingstar/images/mc20-220e8eb191.jpg",
+      "publicId": "risingstar/images/mc20-220e8eb191",
+      "resourceType": "image",
+      "bytes": 454439,
+      "uploadedAt": "2026-04-08T10:19:58.044Z"
+    },
+    "/images/mc21.webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775641840/risingstar/images/mc21-5db7242e37.webp",
+      "publicId": "risingstar/images/mc21-5db7242e37",
+      "resourceType": "image",
+      "bytes": 70006,
+      "uploadedAt": "2026-04-08T10:19:59.260Z"
+    },
+    "/images/mc22.webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775641843/risingstar/images/mc22-3cb1e3e8b6.webp",
+      "publicId": "risingstar/images/mc22-3cb1e3e8b6",
+      "resourceType": "image",
+      "bytes": 34126,
+      "uploadedAt": "2026-04-08T10:20:01.188Z"
+    },
+    "/images/mc23.webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775641846/risingstar/images/mc23-b232956cbd.webp",
+      "publicId": "risingstar/images/mc23-b232956cbd",
+      "resourceType": "image",
+      "bytes": 45494,
+      "uploadedAt": "2026-04-08T10:20:03.210Z"
+    },
+    "/images/mc24.jpeg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775641878/risingstar/images/mc24-5df4477b29.jpg",
+      "publicId": "risingstar/images/mc24-5df4477b29",
+      "resourceType": "image",
+      "bytes": 525177,
+      "uploadedAt": "2026-04-08T10:20:05.936Z"
+    },
+    "/images/mc25.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775642205/risingstar/images/mc25-216adf3bbd.jpg",
+      "publicId": "risingstar/images/mc25-216adf3bbd",
+      "resourceType": "image",
+      "bytes": 8672740,
+      "uploadedAt": "2026-04-08T10:23:26.402Z"
+    },
+    "/arts/7fbf58a2af618aebc5d0271d7d09542a.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775642208/risingstar/arts/7fbf58a2af618aebc5d0271d7d09542a-66b2111d09.jpg",
+      "publicId": "risingstar/arts/7fbf58a2af618aebc5d0271d7d09542a-66b2111d09",
+      "resourceType": "image",
+      "bytes": 108423,
+      "uploadedAt": "2026-04-08T10:23:39.778Z"
+    },
+    "/arts/8.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775642215/risingstar/arts/8-63d6c3be31.jpg",
+      "publicId": "risingstar/arts/8-63d6c3be31",
+      "resourceType": "image",
+      "bytes": 1564382,
+      "uploadedAt": "2026-04-08T10:23:46.208Z"
+    },
+    "/arts/92c51720f74da86a3704e296bc8b0bd4.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775642217/risingstar/arts/92c51720f74da86a3704e296bc8b0bd4-e2a8e24b00.jpg",
+      "publicId": "risingstar/arts/92c51720f74da86a3704e296bc8b0bd4-e2a8e24b00",
+      "resourceType": "image",
+      "bytes": 73815,
+      "uploadedAt": "2026-04-08T10:23:47.340Z"
+    },
+    "/arts/683bf238745925440e6f743e813cb2c1.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775642220/risingstar/arts/683bf238745925440e6f743e813cb2c1-b26417bec9.jpg",
+      "publicId": "risingstar/arts/683bf238745925440e6f743e813cb2c1-b26417bec9",
+      "resourceType": "image",
+      "bytes": 66174,
+      "uploadedAt": "2026-04-08T10:23:48.502Z"
+    },
+    "/arts/2211.w026.n002.2754B.p1.2754.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775642239/risingstar/arts/2211-w026-n002-2754b-p1-2754-39012ba469.jpg",
+      "publicId": "risingstar/arts/2211-w026-n002-2754b-p1-2754-39012ba469",
+      "resourceType": "image",
+      "bytes": 4022920,
+      "uploadedAt": "2026-04-08T10:24:07.545Z"
+    },
+    "/arts/09000.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775642244/risingstar/arts/09000-66fe018c8a.jpg",
+      "publicId": "risingstar/arts/09000-66fe018c8a",
+      "resourceType": "image",
+      "bytes": 733091,
+      "uploadedAt": "2026-04-08T10:24:11.673Z"
+    },
+    "/arts/20038.webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775642246/risingstar/arts/20038-c697bafe00.webp",
+      "publicId": "risingstar/arts/20038-c697bafe00",
+      "resourceType": "image",
+      "bytes": 22632,
+      "uploadedAt": "2026-04-08T10:24:12.917Z"
+    },
+    "/arts/40161.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775642376/risingstar/arts/40161-365b134ced.jpg",
+      "publicId": "risingstar/arts/40161-365b134ced",
+      "resourceType": "image",
+      "bytes": 4304015,
+      "uploadedAt": "2026-04-08T10:24:45.706Z"
+    },
+    "/arts/5653789a-9c52-4652-bb1b-60bc19af06a6.9abbf024b978aae4b97cc87a574933a2.jpeg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775642380/risingstar/arts/5653789a-9c52-4652-bb1b-60bc19af06a6-9abbf024b978aae4b97cc87a574933a2-3b1d0f1d3d.jpg",
+      "publicId": "risingstar/arts/5653789a-9c52-4652-bb1b-60bc19af06a6-9abbf024b978aae4b97cc87a574933a2-3b1d0f1d3d",
+      "resourceType": "image",
+      "bytes": 99220,
+      "uploadedAt": "2026-04-08T10:24:48.886Z"
+    },
+    "/arts/6083598.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775642386/risingstar/arts/6083598-21d7833fb7.jpg",
+      "publicId": "risingstar/arts/6083598-21d7833fb7",
+      "resourceType": "image",
+      "bytes": 162243,
+      "uploadedAt": "2026-04-08T10:24:52.057Z"
+    },
+    "/arts/7338314.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775642401/risingstar/arts/7338314-7d0bfc04f8.jpg",
+      "publicId": "risingstar/arts/7338314-7d0bfc04f8",
+      "resourceType": "image",
+      "bytes": 377686,
+      "uploadedAt": "2026-04-08T10:25:01.360Z"
+    },
+    "/arts/7702598.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775642453/risingstar/arts/7702598-4270897528.jpg",
+      "publicId": "risingstar/arts/7702598-4270897528",
+      "resourceType": "image",
+      "bytes": 945423,
+      "uploadedAt": "2026-04-08T10:25:26.196Z"
+    },
+    "/arts/7736810.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775642545/risingstar/arts/7736810-d555e9b0cd.jpg",
+      "publicId": "risingstar/arts/7736810-d555e9b0cd",
+      "resourceType": "image",
+      "bytes": 2093224,
+      "uploadedAt": "2026-04-08T10:26:14.923Z"
+    },
+    "/arts/7788954.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775642583/risingstar/arts/7788954-819ea4135c.jpg",
+      "publicId": "risingstar/arts/7788954-819ea4135c",
+      "resourceType": "image",
+      "bytes": 1092497,
+      "uploadedAt": "2026-04-08T10:26:21.103Z"
+    },
+    "/arts/9123772.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775642632/risingstar/arts/9123772-4178cdd506.jpg",
+      "publicId": "risingstar/arts/9123772-4178cdd506",
+      "resourceType": "image",
+      "bytes": 1472121,
+      "uploadedAt": "2026-04-08T10:26:25.497Z"
+    },
+    "/arts/10292575.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775642656/risingstar/arts/10292575-8558c7a446.jpg",
+      "publicId": "risingstar/arts/10292575-8558c7a446",
+      "resourceType": "image",
+      "bytes": 680572,
+      "uploadedAt": "2026-04-08T10:26:27.188Z"
+    },
+    "/arts/11451955.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775642706/risingstar/arts/11451955-9ca545f882.jpg",
+      "publicId": "risingstar/arts/11451955-9ca545f882",
+      "resourceType": "image",
+      "bytes": 1403295,
+      "uploadedAt": "2026-04-08T10:26:33.608Z"
+    },
+    "/arts/abstract-colorful-oil-painting-canvas-texture-hand-drawn-brush-stroke-oil-color-paintings-background-modern-art-oil-paintings-with-multicolor-spectrum-abstract-contemporary-art_954783-320.avif": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775642719/risingstar/arts/abstract-colorful-oil-painting-canvas-texture-hand-drawn-brush-stroke-oil-color-paintings-background-modern-art-oil-paintings-with-multicolor-spectrum-abstract-contemporary-art-954783-320-06e2a5f786.avif",
+      "publicId": "risingstar/arts/abstract-colorful-oil-painting-canvas-texture-hand-drawn-brush-stroke-oil-color-paintings-background-modern-art-oil-paintings-with-multicolor-spectrum-abstract-contemporary-art-954783-320-06e2a5f786",
+      "resourceType": "image",
+      "bytes": 273585,
+      "uploadedAt": "2026-04-08T10:26:34.866Z"
+    },
+    "/arts/abstract-spiral-art_1031776-17054.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775642813/risingstar/arts/abstract-spiral-art-1031776-17054-afd60443ff.jpg",
+      "publicId": "risingstar/arts/abstract-spiral-art-1031776-17054-afd60443ff",
+      "resourceType": "image",
+      "bytes": 26778,
+      "uploadedAt": "2026-04-08T10:28:30.002Z"
+    },
+    "/arts/aesthetic-wallpaper-made-abstract-geometric-shapes%20(1).jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775642847/risingstar/arts/aesthetic-wallpaper-made-abstract-geometric-shapes-1-e67893c23d.jpg",
+      "publicId": "risingstar/arts/aesthetic-wallpaper-made-abstract-geometric-shapes-1-e67893c23d",
+      "resourceType": "image",
+      "bytes": 7408275,
+      "uploadedAt": "2026-04-08T10:30:23.551Z"
+    },
+    "/arts/aesthetic-wallpaper-made-abstract-geometric-shapes.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775642885/risingstar/arts/aesthetic-wallpaper-made-abstract-geometric-shapes-2f3af9bd76.jpg",
+      "publicId": "risingstar/arts/aesthetic-wallpaper-made-abstract-geometric-shapes-2f3af9bd76",
+      "resourceType": "image",
+      "bytes": 7408275,
+      "uploadedAt": "2026-04-08T10:30:53.729Z"
+    },
+    "/arts/artworks-bvfv1zFs12q1f1Ex-sbl5bg-t500x500.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775642955/risingstar/arts/artworks-bvfv1zfs12q1f1ex-sbl5bg-t500x500-e650f8babf.jpg",
+      "publicId": "risingstar/arts/artworks-bvfv1zfs12q1f1ex-sbl5bg-t500x500-e650f8babf",
+      "resourceType": "image",
+      "bytes": 54616,
+      "uploadedAt": "2026-04-08T10:31:48.664Z"
+    },
+    "/arts/cf6e27127977899.Y3JvcCwxMjAwLDkzOCwwLDEzMA.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775643263/risingstar/arts/cf6e27127977899-y3jvccwxmjawldkzocwwldezma-0e3a1f963d.jpg",
+      "publicId": "risingstar/arts/cf6e27127977899-y3jvccwxmjawldkzocwwldezma-0e3a1f963d",
+      "resourceType": "image",
+      "bytes": 28395,
+      "uploadedAt": "2026-04-08T10:34:43.760Z"
+    },
+    "/arts/close-up-composition-creative-paper-planets.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775643272/risingstar/arts/close-up-composition-creative-paper-planets-a7b1719cad.jpg",
+      "publicId": "risingstar/arts/close-up-composition-creative-paper-planets-a7b1719cad",
+      "resourceType": "image",
+      "bytes": 429744,
+      "uploadedAt": "2026-04-08T10:34:53.850Z"
+    },
+    "/arts/close-up-stain-mixed-paint.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775643449/risingstar/arts/close-up-stain-mixed-paint-5c5b37f2b1.jpg",
+      "publicId": "risingstar/arts/close-up-stain-mixed-paint-5c5b37f2b1",
+      "resourceType": "image",
+      "bytes": 7339776,
+      "uploadedAt": "2026-04-08T10:36:36.102Z"
+    },
+    "/arts/colorful-vector-watercolor-strokes-white-backdrop.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775643586/risingstar/arts/colorful-vector-watercolor-strokes-white-backdrop-ba9d138bd0.jpg",
+      "publicId": "risingstar/arts/colorful-vector-watercolor-strokes-white-backdrop-ba9d138bd0",
+      "resourceType": "image",
+      "bytes": 8006636,
+      "uploadedAt": "2026-04-08T10:39:29.382Z"
+    },
+    "/arts/create-stunning-4k-ai-generated-music-video-ai-movie-trailer-ai-short-for-you.jpeg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775643587/risingstar/arts/create-stunning-4k-ai-generated-music-video-ai-movie-trailer-ai-short-for-you-f655462361.webp",
+      "publicId": "risingstar/arts/create-stunning-4k-ai-generated-music-video-ai-movie-trailer-ai-short-for-you-f655462361",
+      "resourceType": "image",
+      "bytes": 37482,
+      "uploadedAt": "2026-04-08T10:39:30.791Z"
+    },
+    "/arts/cyber-futuristic-oil-painting-f-ace-portrait-style-abstract-art_1006514-13994.avif": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775644772/risingstar/arts/cyber-futuristic-oil-painting-f-ace-portrait-style-abstract-art-1006514-13994-20b0876a27.avif",
+      "publicId": "risingstar/arts/cyber-futuristic-oil-painting-f-ace-portrait-style-abstract-art-1006514-13994-20b0876a27",
+      "resourceType": "image",
+      "bytes": 37254,
+      "uploadedAt": "2026-04-08T10:39:32.437Z"
+    },
+    "/arts/d14f66defd891ba1a7daf614575e8114b10f6fedfdd5d-gwmRQB_fw658.webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775644774/risingstar/arts/d14f66defd891ba1a7daf614575e8114b10f6fedfdd5d-gwmrqb-fw658-083706d2d8.webp",
+      "publicId": "risingstar/arts/d14f66defd891ba1a7daf614575e8114b10f6fedfdd5d-gwmrqb-fw658-083706d2d8",
+      "resourceType": "image",
+      "bytes": 73956,
+      "uploadedAt": "2026-04-08T10:39:34.979Z"
+    },
+    "/arts/dftxgu6-7571d845-8c09-4c79-8e20-8cef3acc9421.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775644777/risingstar/arts/dftxgu6-7571d845-8c09-4c79-8e20-8cef3acc9421-d330376a01.jpg",
+      "publicId": "risingstar/arts/dftxgu6-7571d845-8c09-4c79-8e20-8cef3acc9421-d330376a01",
+      "resourceType": "image",
+      "bytes": 123411,
+      "uploadedAt": "2026-04-08T10:39:37.215Z"
+    },
+    "/arts/dictatorship-concept-with-puppeteer.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775644885/risingstar/arts/dictatorship-concept-with-puppeteer-2131aacb8c.jpg",
+      "publicId": "risingstar/arts/dictatorship-concept-with-puppeteer-2131aacb8c",
+      "resourceType": "image",
+      "bytes": 5134666,
+      "uploadedAt": "2026-04-08T10:41:25.903Z"
+    },
+    "/arts/el-mundo-interior-v0-kpq2qi1q7u7a1.png": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775644899/risingstar/arts/el-mundo-interior-v0-kpq2qi1q7u7a1-e5bbd5823c.png",
+      "publicId": "risingstar/arts/el-mundo-interior-v0-kpq2qi1q7u7a1-e5bbd5823c",
+      "resourceType": "image",
+      "bytes": 1393962,
+      "uploadedAt": "2026-04-08T10:41:39.824Z"
+    },
+    "/arts/greativity_by_grohsartig_d2psqux-fullview.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775644986/risingstar/arts/greativity-by-grohsartig-d2psqux-fullview-1a8dca5dcf.jpg",
+      "publicId": "risingstar/arts/greativity-by-grohsartig-d2psqux-fullview-1a8dca5dcf",
+      "resourceType": "image",
+      "bytes": 74755,
+      "uploadedAt": "2026-04-08T10:43:06.598Z"
+    },
+    "/arts/il_794xN.5290815671_6oth.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775644987/risingstar/arts/il-794xn-5290815671-6oth-cd73979a42.jpg",
+      "publicId": "risingstar/arts/il-794xn-5290815671-6oth-cd73979a42",
+      "resourceType": "image",
+      "bytes": 80036,
+      "uploadedAt": "2026-04-08T10:43:08.196Z"
+    },
+    "/arts/il_1080xN.5098553808_kbw1.avif": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775644989/risingstar/arts/il-1080xn-5098553808-kbw1-1c66094a0c.avif",
+      "publicId": "risingstar/arts/il-1080xn-5098553808-kbw1-1c66094a0c",
+      "resourceType": "image",
+      "bytes": 66436,
+      "uploadedAt": "2026-04-08T10:43:09.806Z"
+    },
+    "/arts/image_khm1JY5Q_1696600333055_512.webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775644991/risingstar/arts/image-khm1jy5q-1696600333055-512-32422a7025.webp",
+      "publicId": "risingstar/arts/image-khm1jy5q-1696600333055-512-32422a7025",
+      "resourceType": "image",
+      "bytes": 18900,
+      "uploadedAt": "2026-04-08T10:43:11.681Z"
+    },
+    "/arts/logo-design-featuring-golden-eagle-with-ai-photo_1192063-4605.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775644992/risingstar/arts/logo-design-featuring-golden-eagle-with-ai-photo-1192063-4605-0bec3d3bff.jpg",
+      "publicId": "risingstar/arts/logo-design-featuring-golden-eagle-with-ai-photo-1192063-4605-0bec3d3bff",
+      "resourceType": "image",
+      "bytes": 25430,
+      "uploadedAt": "2026-04-08T10:43:12.668Z"
+    },
+    "/arts/minimal-surrealistic-abstract-background%20(1).jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775645391/risingstar/arts/minimal-surrealistic-abstract-background-1-8ab3638c49.jpg",
+      "publicId": "risingstar/arts/minimal-surrealistic-abstract-background-1-8ab3638c49",
+      "resourceType": "image",
+      "bytes": 2712698,
+      "uploadedAt": "2026-04-08T10:49:51.314Z"
+    },
+    "/arts/minimal-surrealistic-abstract-background.jpg": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775645401/risingstar/arts/minimal-surrealistic-abstract-background-8f39b29f98.jpg",
+      "publicId": "risingstar/arts/minimal-surrealistic-abstract-background-8f39b29f98",
+      "resourceType": "image",
+      "bytes": 2099062,
+      "uploadedAt": "2026-04-08T10:50:01.467Z"
+    },
+    "/arts/OIP%20(8).webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775645402/risingstar/arts/oip-8-590a23da23.webp",
+      "publicId": "risingstar/arts/oip-8-590a23da23",
+      "resourceType": "image",
+      "bytes": 50000,
+      "uploadedAt": "2026-04-08T10:50:02.526Z"
+    },
+    "/arts/OIP%20(9).webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775645403/risingstar/arts/oip-9-91f6ee4683.webp",
+      "publicId": "risingstar/arts/oip-9-91f6ee4683",
+      "resourceType": "image",
+      "bytes": 52266,
+      "uploadedAt": "2026-04-08T10:50:03.582Z"
+    },
+    "/arts/OIP%20(10).webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775645404/risingstar/arts/oip-10-53a23ad6d5.webp",
+      "publicId": "risingstar/arts/oip-10-53a23ad6d5",
+      "resourceType": "image",
+      "bytes": 68824,
+      "uploadedAt": "2026-04-08T10:50:04.587Z"
+    },
+    "/arts/OIP%20(11).webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775645405/risingstar/arts/oip-11-8ffbd2b577.webp",
+      "publicId": "risingstar/arts/oip-11-8ffbd2b577",
+      "resourceType": "image",
+      "bytes": 37868,
+      "uploadedAt": "2026-04-08T10:50:05.687Z"
+    },
+    "/arts/OIP%20(12).webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775645406/risingstar/arts/oip-12-361d3b9255.webp",
+      "publicId": "risingstar/arts/oip-12-361d3b9255",
+      "resourceType": "image",
+      "bytes": 24932,
+      "uploadedAt": "2026-04-08T10:50:06.717Z"
+    },
+    "/arts/OIP%20(14).webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775645407/risingstar/arts/oip-14-11ca18889f.webp",
+      "publicId": "risingstar/arts/oip-14-11ca18889f",
+      "resourceType": "image",
+      "bytes": 14324,
+      "uploadedAt": "2026-04-08T10:50:07.684Z"
+    },
+    "/arts/OIP%20(15).webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775645408/risingstar/arts/oip-15-3e96b3f4b3.webp",
+      "publicId": "risingstar/arts/oip-15-3e96b3f4b3",
+      "resourceType": "image",
+      "bytes": 34464,
+      "uploadedAt": "2026-04-08T10:50:08.726Z"
+    },
+    "/arts/OIP%20(16).webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775645409/risingstar/arts/oip-16-708f349c24.webp",
+      "publicId": "risingstar/arts/oip-16-708f349c24",
+      "resourceType": "image",
+      "bytes": 31548,
+      "uploadedAt": "2026-04-08T10:50:09.847Z"
+    },
+    "/arts/OIP%20(17).webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775645411/risingstar/arts/oip-17-027a57b435.webp",
+      "publicId": "risingstar/arts/oip-17-027a57b435",
+      "resourceType": "image",
+      "bytes": 26266,
+      "uploadedAt": "2026-04-08T10:50:11.012Z"
+    },
+    "/arts/OIP%20(18).webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775645412/risingstar/arts/oip-18-7786d669c1.webp",
+      "publicId": "risingstar/arts/oip-18-7786d669c1",
+      "resourceType": "image",
+      "bytes": 92588,
+      "uploadedAt": "2026-04-08T10:50:11.912Z"
+    },
+    "/arts/OIP%20(19).webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775645413/risingstar/arts/oip-19-40d0f29482.webp",
+      "publicId": "risingstar/arts/oip-19-40d0f29482",
+      "resourceType": "image",
+      "bytes": 32368,
+      "uploadedAt": "2026-04-08T10:50:12.874Z"
+    },
+    "/arts/OIP%20(20).webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775645414/risingstar/arts/oip-20-20c6d97aa9.webp",
+      "publicId": "risingstar/arts/oip-20-20c6d97aa9",
+      "resourceType": "image",
+      "bytes": 40998,
+      "uploadedAt": "2026-04-08T10:50:14.106Z"
+    },
+    "/arts/OIP%20(21).webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775645415/risingstar/arts/oip-21-d8827c887e.webp",
+      "publicId": "risingstar/arts/oip-21-d8827c887e",
+      "resourceType": "image",
+      "bytes": 25956,
+      "uploadedAt": "2026-04-08T10:50:15.078Z"
+    },
+    "/arts/OIP%20(22).webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775645416/risingstar/arts/oip-22-cecd7c98ef.webp",
+      "publicId": "risingstar/arts/oip-22-cecd7c98ef",
+      "resourceType": "image",
+      "bytes": 19438,
+      "uploadedAt": "2026-04-08T10:50:16.419Z"
+    },
+    "/arts/OIP%20(23).webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775645417/risingstar/arts/oip-23-3bba2cfb2d.webp",
+      "publicId": "risingstar/arts/oip-23-3bba2cfb2d",
+      "resourceType": "image",
+      "bytes": 57126,
+      "uploadedAt": "2026-04-08T10:50:17.502Z"
+    },
+    "/arts/OIP%20(24).webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775645418/risingstar/arts/oip-24-98e8c39da2.webp",
+      "publicId": "risingstar/arts/oip-24-98e8c39da2",
+      "resourceType": "image",
+      "bytes": 40438,
+      "uploadedAt": "2026-04-08T10:50:18.569Z"
+    },
+    "/arts/OIP%20(25).webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775645420/risingstar/arts/oip-25-a50133ca75.webp",
+      "publicId": "risingstar/arts/oip-25-a50133ca75",
+      "resourceType": "image",
+      "bytes": 42398,
+      "uploadedAt": "2026-04-08T10:50:20.066Z"
+    },
+    "/arts/OIP%20(26).webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775645421/risingstar/arts/oip-26-53835213c3.webp",
+      "publicId": "risingstar/arts/oip-26-53835213c3",
+      "resourceType": "image",
+      "bytes": 24482,
+      "uploadedAt": "2026-04-08T10:50:21.250Z"
+    },
+    "/arts/OIP.webp": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775645422/risingstar/arts/oip-e73e1d1da3.webp",
+      "publicId": "risingstar/arts/oip-e73e1d1da3",
+      "resourceType": "image",
+      "bytes": 21768,
+      "uploadedAt": "2026-04-08T10:50:22.148Z"
+    },
+    "/arts/painting-man-with-sword-his-mouth-words-word-it_1069268-6307.avif": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775645423/risingstar/arts/painting-man-with-sword-his-mouth-words-word-it-1069268-6307-61305e50d1.avif",
+      "publicId": "risingstar/arts/painting-man-with-sword-his-mouth-words-word-it-1069268-6307-61305e50d1",
+      "resourceType": "image",
+      "bytes": 30249,
+      "uploadedAt": "2026-04-08T10:50:23.060Z"
+    },
+    "/arts/painting-womans-face-with-broken-head-broken-wall-generative-ai_900814-7957.avif": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/image/upload/v1775645516/risingstar/arts/painting-womans-face-with-broken-head-broken-wall-generative-ai-900814-7957-5dbf7030a5.avif",
+      "publicId": "risingstar/arts/painting-womans-face-with-broken-head-broken-wall-generative-ai-900814-7957-5dbf7030a5",
+      "resourceType": "image",
+      "bytes": 60610,
+      "uploadedAt": "2026-04-08T10:51:56.185Z"
+    },
+    "/ads/10%20seconds%20ad.mp4": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646455/risingstar/ads/10-seconds-ad-c9d060ff1e.mp4",
+      "publicId": "risingstar/ads/10-seconds-ad-c9d060ff1e",
+      "resourceType": "video",
+      "bytes": 604945,
+      "uploadedAt": "2026-04-08T11:07:35.504Z"
+    },
+    "/ads/Air%20Asia%20-%20Billboard%20-%20Animation%20-%2010%20seconds%20_%20animated%20advertisement%20commercials.mp4": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646457/risingstar/ads/air-asia-billboard-animation-10-seconds-animated-advertisement-commercials-ef22f15d88.mp4",
+      "publicId": "risingstar/ads/air-asia-billboard-animation-10-seconds-animated-advertisement-commercials-ef22f15d88",
+      "resourceType": "video",
+      "bytes": 372476,
+      "uploadedAt": "2026-04-08T11:07:37.880Z"
+    },
+    "/ads/Business%20Success%20Formula%E0%AE%B5%E0%AF%87%E0%AE%A3%E0%AF%8D%E0%AE%9F%E0%AF%81%E0%AE%AE%E0%AE%BE_%20_%2010%20Seconds%20Video%20Ads.mp4": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646471/risingstar/ads/business-success-formula-10-seconds-video-ads-cca5ba6c9a.mp4",
+      "publicId": "risingstar/ads/business-success-formula-10-seconds-video-ads-cca5ba6c9a",
+      "resourceType": "video",
+      "bytes": 2086353,
+      "uploadedAt": "2026-04-08T11:07:51.881Z"
+    },
+    "/ads/CINEMATIC%20PRODUCT%20VIDEO%20_%20Go%20Good%20Drinks.mp4": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646478/risingstar/ads/cinematic-product-video-go-good-drinks-8f093e70f9.mp4",
+      "publicId": "risingstar/ads/cinematic-product-video-go-good-drinks-8f093e70f9",
+      "resourceType": "video",
+      "bytes": 1140185,
+      "uploadedAt": "2026-04-08T11:07:58.874Z"
+    },
+    "/ads/FileBox%20_%20Storage%20Box%20_%2010%20Seconds%20Video%20Ads.mp4": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646486/risingstar/ads/filebox-storage-box-10-seconds-video-ads-5444338e11.mp4",
+      "publicId": "risingstar/ads/filebox-storage-box-10-seconds-video-ads-5444338e11",
+      "resourceType": "video",
+      "bytes": 635202,
+      "uploadedAt": "2026-04-08T11:08:06.142Z"
+    },
+    "/ads/How%20To%20Clean%20CoronaVirus%20From%20Your%20Car%20_%2010%20Seconds%20Video%20Ads.mp4": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646494/risingstar/ads/how-to-clean-coronavirus-from-your-car-10-seconds-video-ads-826ea3c101.mp4",
+      "publicId": "risingstar/ads/how-to-clean-coronavirus-from-your-car-10-seconds-video-ads-826ea3c101",
+      "resourceType": "video",
+      "bytes": 924879,
+      "uploadedAt": "2026-04-08T11:08:14.076Z"
+    },
+    "/ads/Pandiyar%20Kudil%20_%20Online%20Grocery%20Store%20_%2010%20Seconds%20Video%20Ads.mp4": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646502/risingstar/ads/pandiyar-kudil-online-grocery-store-10-seconds-video-ads-0ec19c515c.mp4",
+      "publicId": "risingstar/ads/pandiyar-kudil-online-grocery-store-10-seconds-video-ads-0ec19c515c",
+      "resourceType": "video",
+      "bytes": 1596429,
+      "uploadedAt": "2026-04-08T11:08:22.870Z"
+    },
+    "/ads/Rubic%20Business%20Loans%20_%20Tamil%20Video%20Ad%20_%2010%20Seconds%20Video%20Ads.mp4": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646504/risingstar/ads/rubic-business-loans-tamil-video-ad-10-seconds-video-ads-a323ccc63e.mp4",
+      "publicId": "risingstar/ads/rubic-business-loans-tamil-video-ad-10-seconds-video-ads-a323ccc63e",
+      "resourceType": "video",
+      "bytes": 437006,
+      "uploadedAt": "2026-04-08T11:08:24.830Z"
+    },
+    "/ads/Skin%20Care%20Product%20example%20commercial.mp4": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646509/risingstar/ads/skin-care-product-example-commercial-34fa8cbdb1.mp4",
+      "publicId": "risingstar/ads/skin-care-product-example-commercial-34fa8cbdb1",
+      "resourceType": "video",
+      "bytes": 889454,
+      "uploadedAt": "2026-04-08T11:08:29.584Z"
+    },
+    "/ads/SLING%20BABY%20_%20Doritos%20Commercial%20_%20%23superbowl%20%23commercials.mp4": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646515/risingstar/ads/sling-baby-doritos-commercial-superbowl-commercials-a299905073.mp4",
+      "publicId": "risingstar/ads/sling-baby-doritos-commercial-superbowl-commercials-a299905073",
+      "resourceType": "video",
+      "bytes": 1590288,
+      "uploadedAt": "2026-04-08T11:08:35.386Z"
+    },
+    "/ads/Soft%20Drink%20Motion%20Ads%20in%20After%20effect%20__%20Product%20animation.mp4": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646517/risingstar/ads/soft-drink-motion-ads-in-after-effect-product-animation-5ebb48201d.mp4",
+      "publicId": "risingstar/ads/soft-drink-motion-ads-in-after-effect-product-animation-5ebb48201d",
+      "resourceType": "video",
+      "bytes": 543117,
+      "uploadedAt": "2026-04-08T11:08:37.362Z"
+    },
+    "/ads/Sysmantech%20Ad%20_%20Vu%20Smart%20TV%20_%2010%20Seconds%20Video%20Ads.mp4": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646522/risingstar/ads/sysmantech-ad-vu-smart-tv-10-seconds-video-ads-490c4e1a7f.mp4",
+      "publicId": "risingstar/ads/sysmantech-ad-vu-smart-tv-10-seconds-video-ads-490c4e1a7f",
+      "resourceType": "video",
+      "bytes": 639946,
+      "uploadedAt": "2026-04-08T11:08:42.154Z"
+    },
+    "/ads/Vajra%20Wellness%20_%20Video%20Brochure%20_%2010%20Seconds%20Video%20Ads.mp4": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646527/risingstar/ads/vajra-wellness-video-brochure-10-seconds-video-ads-0a12a8d086.mp4",
+      "publicId": "risingstar/ads/vajra-wellness-video-brochure-10-seconds-video-ads-0a12a8d086",
+      "resourceType": "video",
+      "bytes": 1614960,
+      "uploadedAt": "2026-04-08T11:08:48.024Z"
+    },
+    "/ads/videoplayback%20(1).mp4": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646538/risingstar/ads/videoplayback-1-b2b89d87c3.mp4",
+      "publicId": "risingstar/ads/videoplayback-1-b2b89d87c3",
+      "resourceType": "video",
+      "bytes": 745485,
+      "uploadedAt": "2026-04-08T11:08:58.835Z"
+    },
+    "/ads/videoplayback%20(2).mp4": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646556/risingstar/ads/videoplayback-2-09a2b13cff.mp4",
+      "publicId": "risingstar/ads/videoplayback-2-09a2b13cff",
+      "resourceType": "video",
+      "bytes": 967911,
+      "uploadedAt": "2026-04-08T11:09:17.137Z"
+    },
+    "/ads/videoplayback.mp4": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646580/risingstar/ads/videoplayback-4c6cbb4eb9.mp4",
+      "publicId": "risingstar/ads/videoplayback-4c6cbb4eb9",
+      "resourceType": "video",
+      "bytes": 2247886,
+      "uploadedAt": "2026-04-08T11:09:42.564Z"
+    },
+    "/ads/Watch%20a%2010%20sec%20Coca%20Cola%20Commercial.mp4": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646593/risingstar/ads/watch-a-10-sec-coca-cola-commercial-e132b7d1c6.mp4",
+      "publicId": "risingstar/ads/watch-a-10-sec-coca-cola-commercial-e132b7d1c6",
+      "resourceType": "video",
+      "bytes": 667879,
+      "uploadedAt": "2026-04-08T11:09:54.676Z"
+    },
+    "/ads/Wheels%20%26%20Miles_%20Employee%20Transportation%20_%2010%20Seconds%20Video%20Ads.mp4": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646609/risingstar/ads/wheels-miles-employee-transportation-10-seconds-video-ads-ef33047030.mp4",
+      "publicId": "risingstar/ads/wheels-miles-employee-transportation-10-seconds-video-ads-ef33047030",
+      "resourceType": "video",
+      "bytes": 682524,
+      "uploadedAt": "2026-04-08T11:10:10.792Z"
+    },
+    "/ads/Winworth%20Groups%20_%20Financial%20Services%20_%2010%20Seconds%20Video%20Ads.mp4": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646620/risingstar/ads/winworth-groups-financial-services-10-seconds-video-ads-8094749bdf.mp4",
+      "publicId": "risingstar/ads/winworth-groups-financial-services-10-seconds-video-ads-8094749bdf",
+      "resourceType": "video",
+      "bytes": 573804,
+      "uploadedAt": "2026-04-08T11:10:20.280Z"
+    },
+    "/ads/World%20No%20Tobacco%20Day%20_%2010%20Seconds%20Video%20Ads.mp4": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646625/risingstar/ads/world-no-tobacco-day-10-seconds-video-ads-ebe306d593.mp4",
+      "publicId": "risingstar/ads/world-no-tobacco-day-10-seconds-video-ads-ebe306d593",
+      "resourceType": "video",
+      "bytes": 496594,
+      "uploadedAt": "2026-04-08T11:10:25.857Z"
+    },
+    "/musiclist/Amuly%20-%20DGK%20feat%20Aerozen%20%20Tussin%20snippet%20album%20blindat.mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646644/risingstar/musiclist/amuly-dgk-feat-aerozen-tussin-snippet-album-blindat-4416295968.mp3",
+      "publicId": "risingstar/musiclist/amuly-dgk-feat-aerozen-tussin-snippet-album-blindat-4416295968",
+      "resourceType": "video",
+      "bytes": 299728,
+      "uploadedAt": "2026-04-08T11:10:44.998Z"
+    },
+    "/musiclist/Azteca%20-%20Relatie%20cu%20Bancnotele%20Official%20Video%20(mp3cut.net).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646652/risingstar/musiclist/azteca-relatie-cu-bancnotele-official-video-mp3cut-net-cce469b026.mp3",
+      "publicId": "risingstar/musiclist/azteca-relatie-cu-bancnotele-official-video-mp3cut-net-cce469b026",
+      "resourceType": "video",
+      "bytes": 689609,
+      "uploadedAt": "2026-04-08T11:10:52.563Z"
+    },
+    "/musiclist/Cyber%20Disco%20Indonesia%20Sayang%20House%20Music%202026%20Best%20Party%20Remix%20_%20Just%20Dance%20_%20Bass%20Boosted%20(mp3cut.net).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646658/risingstar/musiclist/cyber-disco-indonesia-sayang-house-music-2026-best-party-remix-just-dance-bass-boosted-mp3cut-net-6c57546d36.mp3",
+      "publicId": "risingstar/musiclist/cyber-disco-indonesia-sayang-house-music-2026-best-party-remix-just-dance-bass-boosted-mp3cut-net-6c57546d36",
+      "resourceType": "video",
+      "bytes": 825002,
+      "uploadedAt": "2026-04-08T11:10:58.778Z"
+    },
+    "/musiclist/Decades%20of%20Indonesian%20Hits_%20Live%20Set%20by%20DJ%20CREAM%20_%20Jakarta%20(mp3cut.net)%20(1).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646665/risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-1-86b7d4aa62.mp3",
+      "publicId": "risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-1-86b7d4aa62",
+      "resourceType": "video",
+      "bytes": 630648,
+      "uploadedAt": "2026-04-08T11:11:05.358Z"
+    },
+    "/musiclist/Decades%20of%20Indonesian%20Hits_%20Live%20Set%20by%20DJ%20CREAM%20_%20Jakarta%20(mp3cut.net)%20(2).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646699/risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-2-f68a8903bd.mp3",
+      "publicId": "risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-2-f68a8903bd",
+      "resourceType": "video",
+      "bytes": 630648,
+      "uploadedAt": "2026-04-08T11:11:39.495Z"
+    },
+    "/musiclist/Decades%20of%20Indonesian%20Hits_%20Live%20Set%20by%20DJ%20CREAM%20_%20Jakarta%20(mp3cut.net)%20(3).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646706/risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-3-252e052f05.mp3",
+      "publicId": "risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-3-252e052f05",
+      "resourceType": "video",
+      "bytes": 630648,
+      "uploadedAt": "2026-04-08T11:11:45.993Z"
+    },
+    "/musiclist/Decades%20of%20Indonesian%20Hits_%20Live%20Set%20by%20DJ%20CREAM%20_%20Jakarta%20(mp3cut.net)%20(4).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646709/risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-4-08941c47e0.mp3",
+      "publicId": "risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-4-08941c47e0",
+      "resourceType": "video",
+      "bytes": 630648,
+      "uploadedAt": "2026-04-08T11:11:49.591Z"
+    },
+    "/musiclist/Decades%20of%20Indonesian%20Hits_%20Live%20Set%20by%20DJ%20CREAM%20_%20Jakarta%20(mp3cut.net)%20(5).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646712/risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-5-3f71bafb26.mp3",
+      "publicId": "risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-5-3f71bafb26",
+      "resourceType": "video",
+      "bytes": 630648,
+      "uploadedAt": "2026-04-08T11:11:52.576Z"
+    },
+    "/musiclist/Decades%20of%20Indonesian%20Hits_%20Live%20Set%20by%20DJ%20CREAM%20_%20Jakarta%20(mp3cut.net)%20(6).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646716/risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-6-d15c6ea22c.mp3",
+      "publicId": "risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-6-d15c6ea22c",
+      "resourceType": "video",
+      "bytes": 630648,
+      "uploadedAt": "2026-04-08T11:11:56.046Z"
+    },
+    "/musiclist/Decades%20of%20Indonesian%20Hits_%20Live%20Set%20by%20DJ%20CREAM%20_%20Jakarta%20(mp3cut.net)%20(7).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646720/risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-7-e0d12d1da3.mp3",
+      "publicId": "risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-7-e0d12d1da3",
+      "resourceType": "video",
+      "bytes": 630648,
+      "uploadedAt": "2026-04-08T11:12:01.026Z"
+    },
+    "/musiclist/Decades%20of%20Indonesian%20Hits_%20Live%20Set%20by%20DJ%20CREAM%20_%20Jakarta%20(mp3cut.net)%20(8).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646724/risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-8-fa02469a4f.mp3",
+      "publicId": "risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-8-fa02469a4f",
+      "resourceType": "video",
+      "bytes": 786546,
+      "uploadedAt": "2026-04-08T11:12:04.776Z"
+    },
+    "/musiclist/Decades%20of%20Indonesian%20Hits_%20Live%20Set%20by%20DJ%20CREAM%20_%20Jakarta%20(mp3cut.net)%20(9).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646727/risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-9-f468ba7723.mp3",
+      "publicId": "risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-9-f468ba7723",
+      "resourceType": "video",
+      "bytes": 786546,
+      "uploadedAt": "2026-04-08T11:12:06.942Z"
+    },
+    "/musiclist/Decades%20of%20Indonesian%20Hits_%20Live%20Set%20by%20DJ%20CREAM%20_%20Jakarta%20(mp3cut.net)%20(10).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646728/risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-10-12a61f0e64.mp3",
+      "publicId": "risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-10-12a61f0e64",
+      "resourceType": "video",
+      "bytes": 786546,
+      "uploadedAt": "2026-04-08T11:12:08.711Z"
+    },
+    "/musiclist/Decades%20of%20Indonesian%20Hits_%20Live%20Set%20by%20DJ%20CREAM%20_%20Jakarta%20(mp3cut.net)%20(11).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646731/risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-11-c28c4a299d.mp3",
+      "publicId": "risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-11-c28c4a299d",
+      "resourceType": "video",
+      "bytes": 786546,
+      "uploadedAt": "2026-04-08T11:12:12.301Z"
+    },
+    "/musiclist/Decades%20of%20Indonesian%20Hits_%20Live%20Set%20by%20DJ%20CREAM%20_%20Jakarta%20(mp3cut.net)%20(12).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646737/risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-12-412b1fbfb9.mp3",
+      "publicId": "risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-12-412b1fbfb9",
+      "resourceType": "video",
+      "bytes": 786546,
+      "uploadedAt": "2026-04-08T11:12:18.051Z"
+    },
+    "/musiclist/Decades%20of%20Indonesian%20Hits_%20Live%20Set%20by%20DJ%20CREAM%20_%20Jakarta%20(mp3cut.net)%20(13).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646742/risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-13-3356e57736.mp3",
+      "publicId": "risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-13-3356e57736",
+      "resourceType": "video",
+      "bytes": 786546,
+      "uploadedAt": "2026-04-08T11:12:22.284Z"
+    },
+    "/musiclist/Decades%20of%20Indonesian%20Hits_%20Live%20Set%20by%20DJ%20CREAM%20_%20Jakarta%20(mp3cut.net)%20(14).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646744/risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-14-5cbb9824c4.mp3",
+      "publicId": "risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-14-5cbb9824c4",
+      "resourceType": "video",
+      "bytes": 786546,
+      "uploadedAt": "2026-04-08T11:12:28.053Z"
+    },
+    "/musiclist/Decades%20of%20Indonesian%20Hits_%20Live%20Set%20by%20DJ%20CREAM%20_%20Jakarta%20(mp3cut.net)%20(15).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646750/risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-15-d0e843a66c.mp3",
+      "publicId": "risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-15-d0e843a66c",
+      "resourceType": "video",
+      "bytes": 786546,
+      "uploadedAt": "2026-04-08T11:12:30.293Z"
+    },
+    "/musiclist/Decades%20of%20Indonesian%20Hits_%20Live%20Set%20by%20DJ%20CREAM%20_%20Jakarta%20(mp3cut.net)%20(16).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646759/risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-16-cfb4e02ad9.mp3",
+      "publicId": "risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-16-cfb4e02ad9",
+      "resourceType": "video",
+      "bytes": 786546,
+      "uploadedAt": "2026-04-08T11:12:39.485Z"
+    },
+    "/musiclist/Decades%20of%20Indonesian%20Hits_%20Live%20Set%20by%20DJ%20CREAM%20_%20Jakarta%20(mp3cut.net)%20(18).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646762/risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-18-38ca06eb40.mp3",
+      "publicId": "risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-18-38ca06eb40",
+      "resourceType": "video",
+      "bytes": 786546,
+      "uploadedAt": "2026-04-08T11:12:42.550Z"
+    },
+    "/musiclist/Decades%20of%20Indonesian%20Hits_%20Live%20Set%20by%20DJ%20CREAM%20_%20Jakarta%20(mp3cut.net).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646769/risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-a6c8d3c42b.mp3",
+      "publicId": "risingstar/musiclist/decades-of-indonesian-hits-live-set-by-dj-cream-jakarta-mp3cut-net-a6c8d3c42b",
+      "resourceType": "video",
+      "bytes": 630648,
+      "uploadedAt": "2026-04-08T11:12:49.566Z"
+    },
+    "/musiclist/do%20you%20remember%20me_%20indie%20playlist%20(mp3cut.net)%20(1).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646773/risingstar/musiclist/do-you-remember-me-indie-playlist-mp3cut-net-1-6a3976a059.mp3",
+      "publicId": "risingstar/musiclist/do-you-remember-me-indie-playlist-mp3cut-net-1-6a3976a059",
+      "resourceType": "video",
+      "bytes": 722395,
+      "uploadedAt": "2026-04-08T11:12:52.917Z"
+    },
+    "/musiclist/do%20you%20remember%20me_%20indie%20playlist%20(mp3cut.net)%20(2).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646775/risingstar/musiclist/do-you-remember-me-indie-playlist-mp3cut-net-2-8193496999.mp3",
+      "publicId": "risingstar/musiclist/do-you-remember-me-indie-playlist-mp3cut-net-2-8193496999",
+      "resourceType": "video",
+      "bytes": 722395,
+      "uploadedAt": "2026-04-08T11:12:55.131Z"
+    },
+    "/musiclist/do%20you%20remember%20me_%20indie%20playlist%20(mp3cut.net)%20(3).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646776/risingstar/musiclist/do-you-remember-me-indie-playlist-mp3cut-net-3-83e13a1e28.mp3",
+      "publicId": "risingstar/musiclist/do-you-remember-me-indie-playlist-mp3cut-net-3-83e13a1e28",
+      "resourceType": "video",
+      "bytes": 722395,
+      "uploadedAt": "2026-04-08T11:12:56.749Z"
+    },
+    "/musiclist/do%20you%20remember%20me_%20indie%20playlist%20(mp3cut.net)%20(4).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646781/risingstar/musiclist/do-you-remember-me-indie-playlist-mp3cut-net-4-468b52864e.mp3",
+      "publicId": "risingstar/musiclist/do-you-remember-me-indie-playlist-mp3cut-net-4-468b52864e",
+      "resourceType": "video",
+      "bytes": 722395,
+      "uploadedAt": "2026-04-08T11:13:01.739Z"
+    },
+    "/musiclist/do%20you%20remember%20me_%20indie%20playlist%20(mp3cut.net)%20(5).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646784/risingstar/musiclist/do-you-remember-me-indie-playlist-mp3cut-net-5-9546d441b7.mp3",
+      "publicId": "risingstar/musiclist/do-you-remember-me-indie-playlist-mp3cut-net-5-9546d441b7",
+      "resourceType": "video",
+      "bytes": 722395,
+      "uploadedAt": "2026-04-08T11:13:04.188Z"
+    },
+    "/musiclist/do%20you%20remember%20me_%20indie%20playlist%20(mp3cut.net)%20(6).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646787/risingstar/musiclist/do-you-remember-me-indie-playlist-mp3cut-net-6-90e0ba3439.mp3",
+      "publicId": "risingstar/musiclist/do-you-remember-me-indie-playlist-mp3cut-net-6-90e0ba3439",
+      "resourceType": "video",
+      "bytes": 722395,
+      "uploadedAt": "2026-04-08T11:13:07.170Z"
+    },
+    "/musiclist/do%20you%20remember%20me_%20indie%20playlist%20(mp3cut.net)%20(7).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646790/risingstar/musiclist/do-you-remember-me-indie-playlist-mp3cut-net-7-84b60af151.mp3",
+      "publicId": "risingstar/musiclist/do-you-remember-me-indie-playlist-mp3cut-net-7-84b60af151",
+      "resourceType": "video",
+      "bytes": 722395,
+      "uploadedAt": "2026-04-08T11:13:10.323Z"
+    },
+    "/musiclist/do%20you%20remember%20me_%20indie%20playlist%20(mp3cut.net).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646794/risingstar/musiclist/do-you-remember-me-indie-playlist-mp3cut-net-65b15f4a72.mp3",
+      "publicId": "risingstar/musiclist/do-you-remember-me-indie-playlist-mp3cut-net-65b15f4a72",
+      "resourceType": "video",
+      "bytes": 722395,
+      "uploadedAt": "2026-04-08T11:13:14.204Z"
+    },
+    "/musiclist/do%20you%20remember%20me_%20indie%20playlist.mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646848/risingstar/musiclist/do-you-remember-me-indie-playlist-d43c013e7f.mp3",
+      "publicId": "risingstar/musiclist/do-you-remember-me-indie-playlist-d43c013e7f",
+      "resourceType": "video",
+      "bytes": 27979746,
+      "uploadedAt": "2026-04-08T11:14:09.351Z"
+    },
+    "/musiclist/Global%20Underground%20026_%20Romania%20CD2%20(mp3cut.net)%20(1).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646853/risingstar/musiclist/global-underground-026-romania-cd2-mp3cut-net-1-be2a496613.mp3",
+      "publicId": "risingstar/musiclist/global-underground-026-romania-cd2-mp3cut-net-1-be2a496613",
+      "resourceType": "video",
+      "bytes": 929595,
+      "uploadedAt": "2026-04-08T11:14:13.164Z"
+    },
+    "/musiclist/Global%20Underground%20026_%20Romania%20CD2%20(mp3cut.net)%20(2).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646855/risingstar/musiclist/global-underground-026-romania-cd2-mp3cut-net-2-6ba5f3ad98.mp3",
+      "publicId": "risingstar/musiclist/global-underground-026-romania-cd2-mp3cut-net-2-6ba5f3ad98",
+      "resourceType": "video",
+      "bytes": 784877,
+      "uploadedAt": "2026-04-08T11:14:15.600Z"
+    },
+    "/musiclist/Global%20Underground%20026_%20Romania%20CD2%20(mp3cut.net)%20(3).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646857/risingstar/musiclist/global-underground-026-romania-cd2-mp3cut-net-3-4153fb16f7.mp3",
+      "publicId": "risingstar/musiclist/global-underground-026-romania-cd2-mp3cut-net-3-4153fb16f7",
+      "resourceType": "video",
+      "bytes": 784877,
+      "uploadedAt": "2026-04-08T11:14:17.551Z"
+    },
+    "/musiclist/Global%20Underground%20026_%20Romania%20CD2%20(mp3cut.net)%20(4).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646859/risingstar/musiclist/global-underground-026-romania-cd2-mp3cut-net-4-f9b85ee091.mp3",
+      "publicId": "risingstar/musiclist/global-underground-026-romania-cd2-mp3cut-net-4-f9b85ee091",
+      "resourceType": "video",
+      "bytes": 808909,
+      "uploadedAt": "2026-04-08T11:14:19.068Z"
+    },
+    "/musiclist/Global%20Underground%20026_%20Romania%20CD2%20(mp3cut.net).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646862/risingstar/musiclist/global-underground-026-romania-cd2-mp3cut-net-52f8ed161d.mp3",
+      "publicId": "risingstar/musiclist/global-underground-026-romania-cd2-mp3cut-net-52f8ed161d",
+      "resourceType": "video",
+      "bytes": 1521330,
+      "uploadedAt": "2026-04-08T11:14:22.591Z"
+    },
+    "/musiclist/RAVA%20-%20Giulesti%20Crangasi%20Official%20Video%20(mp3cut.net).mp3": {
+      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646864/risingstar/musiclist/rava-giulesti-crangasi-official-video-mp3cut-net-56a66bae9d.mp3",
+      "publicId": "risingstar/musiclist/rava-giulesti-crangasi-official-video-mp3cut-net-56a66bae9d",
+      "resourceType": "video",
+      "bytes": 509560,
+      "uploadedAt": "2026-04-08T11:14:25.392Z"
+    }
+  }
+}

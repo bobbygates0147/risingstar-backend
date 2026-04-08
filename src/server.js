@@ -11,6 +11,7 @@ const dashboardRoutes = require('./routes/dashboard');
 const adminRoutes = require('./routes/admin');
 const aiBotRoutes = require('./routes/ai-bot');
 const profileRoutes = require('./routes/profile');
+const walletRoutes = require('./routes/wallet');
 const { ensureAdminUser } = require('./services/auth-service');
 
 dotenv.config();
@@ -28,6 +29,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api', contentRoutes);
 app.use('/api', dashboardRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/wallet', walletRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/ai-bot', aiBotRoutes);
 
