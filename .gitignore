@@ -1,3 +1,7 @@
 node_modules
 .env
+.env.*
 npm-debug.log*
+downloads/
+coverage/
+.DS_Store

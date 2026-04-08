@@ -1,3 +1,6 @@
+const path = require('path');
+const crypto = require('crypto');
+const fs = require('fs/promises');
 const express = require('express');
 
 const { requireAuth } = require('../middleware/auth');
@@ -8,6 +11,18 @@ const { toPublicUser } = require('../services/auth-service');
 
 const router = express.Router();
 const SUPPORTED_NETWORKS = new Set(['TRC20', 'ERC20', 'BEP20', 'BTC', 'ETH', 'SOL']);
+const PROOF_DIR = path.resolve(__dirname, '..', '..', 'downloads', 'proofs');
+const rawProofLimit = Number.parseInt(process.env.WALLET_PROOF_MAX_BYTES || '', 10);
+const WALLET_PROOF_MAX_BYTES = Number.isFinite(rawProofLimit)
+  ? Math.min(Math.max(rawProofLimit, 200 * 1024), 10 * 1024 * 1024)
+  : 4 * 1024 * 1024;
+const SUPPORTED_PROOF_TYPES = new Map([
+  ['image/jpeg', '.jpg'],
+  ['image/jpg', '.jpg'],
+  ['image/png', '.png'],
+  ['image/webp', '.webp'],
+  ['application/pdf', '.pdf'],
+]);
 
 function parseEnvInteger(name, fallback, min, max) {
   const parsed = Number.parseInt(process.env[name] || '', 10);
@@ -46,6 +61,60 @@ const HISTORY_LIMIT_MAX = 300;
 
 function toUsd(value) {
   return Number(Number(value || 0).toFixed(2));
+}
+
+function parseProofDataUrl(dataUrl) {
+  if (!dataUrl || typeof dataUrl !== 'string') {
+    return null;
+  }
+
+  const raw = dataUrl.trim();
+  if (!raw.toLowerCase().startsWith('data:')) {
+    return null;
+  }
+
+  const commaIndex = raw.indexOf(',');
+  if (commaIndex === -1) {
+    return null;
+  }
+
+  const header = raw.slice(5, commaIndex); // after "data:"
+  const payload = raw.slice(commaIndex + 1);
+  const headerParts = header.split(';').filter(Boolean);
+  const mimeType = (headerParts[0] || '').toLowerCase();
+  const isBase64 = headerParts.some((part) => part.toLowerCase() === 'base64');
+
+  if (!mimeType || !isBase64 || !SUPPORTED_PROOF_TYPES.has(mimeType)) {
+    return null;
+  }
+
+  const base64Value = payload.replace(/\s+/g, '');
+
+  let buffer;
+
+  try {
+    buffer = Buffer.from(base64Value, 'base64');
+  } catch {
+    return null;
+  }
+
+  if (!buffer || buffer.length === 0) {
+    return null;
+  }
+
+  return {
+    mimeType,
+    extension: SUPPORTED_PROOF_TYPES.get(mimeType),
+    buffer,
+  };
+}
+
+function toProofUrl(proofFile) {
+  if (!proofFile) {
+    return '';
+  }
+
+  return `/media/${proofFile.replace(/\\/g, '/')}`;
 }
 
 function formatTimeLabel(value) {
@@ -128,6 +197,7 @@ function mapDepositEntry(doc) {
     timeLabel: formatTimeLabel(doc.occurredAt || doc.createdAt),
     kind: 'deposit',
     network: doc.network || undefined,
+    proofUrl: toProofUrl(doc.proofFile) || undefined,
     occurredAt: doc.occurredAt || doc.createdAt,
   };
 }
@@ -186,6 +256,11 @@ router.get('/summary', requireAuth, async (req, res) => {
   const tierId = resolveTierId(req.user);
   const baseDailyLimit = DAILY_LIMIT_BY_TIER[tierId] || DAILY_LIMIT_BY_TIER.tier1;
   const extraTaskSlots = getUserExtraTaskSlots(req.user);
+  const pendingDeposits = await WalletTransaction.countDocuments({
+    userId: req.user._id,
+    kind: 'deposit',
+    status: 'Pending',
+  });
 
   res.json({
     wallet: {
@@ -193,6 +268,7 @@ router.get('/summary', requireAuth, async (req, res) => {
       withdrawable: toUsd(req.user.withdrawableBalance),
       totalDepositedUsd: toUsd(req.user.depositTotalUsd),
       lastDepositAt: req.user.lastDepositAt || null,
+      pendingDeposits,
     },
     taskCapacity: {
       baseDailyLimit,
@@ -236,8 +312,7 @@ router.get('/history', requireAuth, async (req, res, next) => {
         const rightTime = new Date(right.occurredAt || 0).getTime();
         return rightTime - leftTime;
       })
-      .slice(0, limit)
-      .map(({ occurredAt, ...entry }) => entry);
+      .slice(0, limit);
 
     return res.json({ entries });
   } catch (error) {
@@ -255,6 +330,7 @@ router.post('/deposit', requireAuth, async (req, res, next) => {
     const note = String(req.body?.note || '')
       .trim()
       .slice(0, 180);
+    const proofDataUrl = req.body?.proofDataUrl;
 
     if (!Number.isFinite(amountUsd) || amountUsd < DEPOSIT_MIN_USD || amountUsd > DEPOSIT_MAX_USD) {
       return res.status(400).json({
@@ -270,50 +346,52 @@ router.post('/deposit', requireAuth, async (req, res, next) => {
       return res.status(400).json({ message: 'Payment reference should be at least 3 characters' });
     }
 
-    const normalizedAmount = toUsd(amountUsd);
-    const previousDepositTotalUsd = toUsd(req.user.depositTotalUsd);
-    const currentExtraTaskSlots = getUserExtraTaskSlots(req.user);
-    const nextDepositTotalUsd = toUsd(previousDepositTotalUsd + normalizedAmount);
-    const eligibleExtraTaskSlots = Math.min(
-      DEPOSIT_EXTRA_TASKS_MAX,
-      Math.floor(nextDepositTotalUsd / DEPOSIT_USD_PER_EXTRA_TASK)
-    );
-    const nextExtraTaskSlots = Math.max(currentExtraTaskSlots, eligibleExtraTaskSlots);
-    const grantedTaskSlots = Math.max(0, nextExtraTaskSlots - currentExtraTaskSlots);
+    let proofFile = '';
 
-    req.user.depositTotalUsd = nextDepositTotalUsd;
-    req.user.extraTaskSlots = nextExtraTaskSlots;
-    req.user.lastDepositAt = new Date();
-    req.user.walletBalance = toUsd(req.user.walletBalance + normalizedAmount);
-    req.user.withdrawableBalance = toUsd(req.user.withdrawableBalance + normalizedAmount);
+    if (proofDataUrl) {
+      const parsed = parseProofDataUrl(proofDataUrl);
+
+      if (!parsed) {
+        return res.status(400).json({ message: 'Proof of payment must be a valid image or PDF' });
+      }
+
+      if (parsed.buffer.length > WALLET_PROOF_MAX_BYTES) {
+        return res.status(400).json({
+          message: `Proof file should be ${Math.floor(WALLET_PROOF_MAX_BYTES / (1024 * 1024))}MB or less`,
+        });
+      }
+
+      await fs.mkdir(PROOF_DIR, { recursive: true });
+      const fileName = `${req.user._id}-${Date.now()}-${crypto.randomBytes(4).toString('hex')}${parsed.extension}`;
+      const filePath = path.join(PROOF_DIR, fileName);
+      await fs.writeFile(filePath, parsed.buffer);
+      proofFile = path.join('proofs', fileName);
+    }
+
+    const normalizedAmount = toUsd(amountUsd);
 
     const depositDoc = await WalletTransaction.create({
       userId: req.user._id,
       kind: 'deposit',
       amount: normalizedAmount,
-      status: 'Completed',
+      status: 'Pending',
       network,
       reference,
       note,
-      occurredAt: req.user.lastDepositAt,
+      proofFile,
+      occurredAt: new Date(),
     });
 
-    await req.user.save();
-
     return res.status(201).json({
-      message:
-        grantedTaskSlots > 0
-          ? `Deposit received. +${grantedTaskSlots} extra daily tasks unlocked.`
-          : 'Deposit received. Wallet balance updated.',
+      message: 'Deposit submitted and pending admin approval.',
       deposit: {
         amountUsd: normalizedAmount,
         network,
         reference,
         note,
-        grantedTaskSlots,
-        totalExtraTaskSlots: nextExtraTaskSlots,
-        totalDepositedUsd: nextDepositTotalUsd,
-        depositedAt: req.user.lastDepositAt,
+        ...(proofFile ? { proofUrl: toProofUrl(proofFile) } : {}),
+        status: 'Pending',
+        depositedAt: depositDoc.occurredAt,
         historyId: `deposit-${depositDoc._id}`,
       },
       wallet: {
@@ -322,7 +400,7 @@ router.post('/deposit', requireAuth, async (req, res, next) => {
       },
       taskCapacity: {
         dailyLimit: getDailyLimit(req.user),
-        extraTaskSlots: nextExtraTaskSlots,
+        extraTaskSlots: getUserExtraTaskSlots(req.user),
         usdPerExtraTask: DEPOSIT_USD_PER_EXTRA_TASK,
       },
       user: toPublicUser(req.user),
