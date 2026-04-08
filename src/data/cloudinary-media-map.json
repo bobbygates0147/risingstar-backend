@@ -942,13 +942,6 @@
       "bytes": 722395,
       "uploadedAt": "2026-04-08T11:13:14.204Z"
     },
-    "/musiclist/do%20you%20remember%20me_%20indie%20playlist.mp3": {
-      "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646848/risingstar/musiclist/do-you-remember-me-indie-playlist-d43c013e7f.mp3",
-      "publicId": "risingstar/musiclist/do-you-remember-me-indie-playlist-d43c013e7f",
-      "resourceType": "video",
-      "bytes": 27979746,
-      "uploadedAt": "2026-04-08T11:14:09.351Z"
-    },
     "/musiclist/Global%20Underground%20026_%20Romania%20CD2%20(mp3cut.net)%20(1).mp3": {
       "url": "https://res.cloudinary.com/dzd5sq3r2/video/upload/v1775646853/risingstar/musiclist/global-underground-026-romania-cd2-mp3cut-net-1-be2a496613.mp3",
       "publicId": "risingstar/musiclist/global-underground-026-romania-cd2-mp3cut-net-1-be2a496613",
@@ -991,5 +984,6 @@
       "bytes": 509560,
       "uploadedAt": "2026-04-08T11:14:25.392Z"
     }
-  }
+  },
+  "generatedAt": "2026-04-08T13:01:57.255Z"
 }

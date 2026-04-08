@@ -45,6 +45,11 @@ const TASK_REWARD_MULTIPLIER_BY_TIER = {
   tier3: parseEnvFloat('TASK_REWARD_MULTIPLIER_TIER3', 1, 0.1, 2),
 };
 
+function hasRequiredTaskTypes(tasks) {
+  const types = new Set(tasks.map((task) => task.type));
+  return types.has('Music') && types.has('Art') && types.has('Ads');
+}
+
 function toDayKey(date = new Date()) {
   const year = date.getUTCFullYear();
   const month = String(date.getUTCMonth() + 1).padStart(2, '0');
@@ -158,7 +163,7 @@ router.get('/tasks', requireAuth, async (req, res, next) => {
   try {
     let tasks = await listTasks();
 
-    if (tasks.length === 0) {
+    if (tasks.length === 0 || !hasRequiredTaskTypes(tasks)) {
       await seedDummyTasks();
       tasks = await listTasks();
     }
