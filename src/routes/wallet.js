@@ -8,6 +8,10 @@ const TaskCompletion = require('../models/TaskCompletion');
 const WalletTransaction = require('../models/WalletTransaction');
 const WithdrawalRequest = require('../models/WithdrawalRequest');
 const { toPublicUser } = require('../services/auth-service');
+const {
+  resolveTaskArtist,
+  resolveTaskTitle,
+} = require('../services/task-catalog-metadata');
 
 const router = express.Router();
 const SUPPORTED_NETWORKS = new Set(['TRC20', 'ERC20', 'BEP20', 'BTC', 'ETH', 'SOL']);
@@ -238,7 +242,10 @@ function mapWithdrawalEntry(doc) {
 }
 
 function mapTaskCompletionEntry(doc) {
-  const detail = doc.artist ? `${doc.title} by ${doc.artist}` : doc.title;
+  const sourceTaskId = doc.sourceTaskId || doc.sessionTaskId || String(doc._id);
+  const title = resolveTaskTitle(doc.type, sourceTaskId, doc.title);
+  const artist = resolveTaskArtist(doc.type, sourceTaskId, doc.title, doc.artist);
+  const detail = artist ? `${title} by ${artist}` : title;
 
   return {
     id: `task-${doc._id}`,

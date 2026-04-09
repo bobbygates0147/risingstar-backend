@@ -7,6 +7,10 @@ const {
 } = require('../services/ai-bot-status');
 const TaskCompletion = require('../models/TaskCompletion');
 const { requireAuth } = require('../middleware/auth');
+const {
+  resolveTaskArtist,
+  resolveTaskTitle,
+} = require('../services/task-catalog-metadata');
 
 const router = express.Router();
 const ACTIVITY_ITEM_LIMIT = 8;
@@ -207,7 +211,10 @@ function buildDashboardActivity(completions) {
 
   return completions.slice(0, ACTIVITY_ITEM_LIMIT).map((completion) => {
     const category = toDashboardCategory(completion.type);
-    const detail = completion.artist ? `${completion.title} by ${completion.artist}` : completion.title;
+    const sourceTaskId = completion.sourceTaskId || completion.sessionTaskId || String(completion._id);
+    const title = resolveTaskTitle(category, sourceTaskId, completion.title);
+    const artist = resolveTaskArtist(category, sourceTaskId, completion.title, completion.artist);
+    const detail = artist ? `${title} by ${artist}` : title;
 
     return {
       id: `activity-${completion._id}`,
@@ -224,9 +231,11 @@ function buildActivityLog(completions) {
   const now = new Date();
 
   return completions.slice(0, ACTIVITY_LOG_LIMIT).map((completion) => {
-    const title = completion.artist
-      ? `${completion.title} - ${completion.artist}`
-      : completion.title;
+    const category = toDashboardCategory(completion.type);
+    const sourceTaskId = completion.sourceTaskId || completion.sessionTaskId || String(completion._id);
+    const cleanTitle = resolveTaskTitle(category, sourceTaskId, completion.title);
+    const cleanArtist = resolveTaskArtist(category, sourceTaskId, completion.title, completion.artist);
+    const title = cleanArtist ? `${cleanTitle} - ${cleanArtist}` : cleanTitle;
 
     return {
       id: `log-${completion._id}`,

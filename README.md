@@ -22,7 +22,7 @@ Node.js + Express backend for Rising Star task content.
 5. Start server:
    - `npm run dev`
 
-## Cloudinary (Ads, Arts, Music)
+## Cloudinary (Ads, Arts, Music, Profile Photos)
 
 1. Add Cloudinary credentials in backend `.env`:
    - `CLOUDINARY_CLOUD_NAME`
@@ -34,7 +34,7 @@ Node.js + Express backend for Rising Star task content.
 3. Reseed tasks so Music/Ads media fields are refreshed from mapped assets:
    - `npm run seed:tasks`
 
-The uploader writes `src/data/cloudinary-media-map.json`. Task responses automatically use Cloudinary URLs when mappings exist.
+The uploader writes `src/data/cloudinary-media-map.json`. Task responses automatically use Cloudinary URLs when mappings exist. Profile photo uploads use the same Cloudinary credentials at request time and store the returned secure URL on the user record.
 
 ## API
 

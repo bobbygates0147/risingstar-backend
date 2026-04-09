@@ -24,6 +24,21 @@ function normalizeEmail(email) {
   return String(email || '').trim().toLowerCase();
 }
 
+function normalizeTimeZone(timezone) {
+  const value = String(timezone || '').trim();
+
+  if (!value) {
+    return 'Africa/Lagos';
+  }
+
+  try {
+    new Intl.DateTimeFormat('en-US', { timeZone: value }).format(new Date());
+    return value;
+  } catch {
+    return 'Africa/Lagos';
+  }
+}
+
 function toPublicUser(user) {
   return {
     id: String(user._id),
@@ -200,6 +215,7 @@ async function registerUser({
   paymentMethod,
   paymentReference,
   paymentAmountUsd,
+  timezone,
 }) {
   const cleanName = String(name || '').trim();
   const cleanEmail = normalizeEmail(email);
@@ -207,6 +223,7 @@ async function registerUser({
   const tierConfig = resolveTier(tier);
   const paymentMethodRaw = paymentMethod;
   const cleanPaymentReference = String(paymentReference || '').trim();
+  const cleanTimeZone = normalizeTimeZone(timezone);
   const paymentAmount = Number(paymentAmountUsd);
   const signupPricing = getSignupPricingConfig();
 
@@ -259,7 +276,7 @@ async function registerUser({
     country: '',
     bio: '',
     language: 'English',
-    timezone: 'Africa/Lagos',
+    timezone: cleanTimeZone,
     avatarUrl: '',
     notificationSettings: {
       taskAlerts: true,

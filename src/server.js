@@ -4,6 +4,8 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 
+dotenv.config();
+
 const connectDatabase = require('./config/db');
 const contentRoutes = require('./routes/content');
 const authRoutes = require('./routes/auth');
@@ -13,8 +15,6 @@ const aiBotRoutes = require('./routes/ai-bot');
 const profileRoutes = require('./routes/profile');
 const walletRoutes = require('./routes/wallet');
 const { ensureAdminUser } = require('./services/auth-service');
-
-dotenv.config();
 
 const app = express();
 const port = Number(process.env.PORT || 4000);
@@ -40,6 +40,10 @@ app.get('/health', (req, res) => {
 app.use((err, req, res, next) => {
   if (err && err.type === 'entity.too.large') {
     return res.status(413).json({ message: 'Uploaded file is too large' });
+  }
+
+  if (err && Number.isInteger(err.statusCode)) {
+    return res.status(err.statusCode).json({ message: err.message || 'Request failed' });
   }
 
   console.error(err);

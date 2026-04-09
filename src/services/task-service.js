@@ -3,38 +3,14 @@ const path = require('path');
 
 const Task = require('../models/Task');
 const { getCloudinaryUrl, getMappedUrlsByFolder } = require('./cloudinary-media-map');
-
-const musicArtists = [
-  'Nova Kade',
-  'Zuri Vale',
-  'AYR',
-  'Kairo',
-  'Juno Redd',
-  'Ari Moss',
-  'Nexus Nine',
-  'Luna Shore',
-];
-
-const artArtists = ['Mira Sol', 'Arlo Muse', 'Nia Hart', 'Kai Dune', 'Rumi Ash', 'Lio Voss', 'Ana Crest'];
-
-const musicMoods = [
-  'Synthwave pulse',
-  'Afro-fusion anthem',
-  'Late-night drill',
-  'Soul-pop crossover',
-  'High-energy campaign',
-  'Melodic street vibe',
-];
-
-const artMoods = [
-  'Like abstract showcase',
-  'Like modern gallery post',
-  'Curated visual drop',
-  'Studio color study',
-  'Concept portrait set',
-];
-
-const adMoods = ['Sponsored ad clip', 'Product ad clip', 'Brand promo clip'];
+const {
+  getAdCatalogProfile,
+  getArtCatalogProfile,
+  getMusicCatalogProfile,
+  resolveTaskArtist,
+  resolveTaskMood,
+  resolveTaskTitle,
+} = require('./task-catalog-metadata');
 
 function getFrontendPublicDir() {
   if (process.env.FRONTEND_PUBLIC_DIR) {
@@ -179,6 +155,7 @@ function buildDummyTasks() {
 
   imageCoverUrls.forEach((coverImage, index) => {
     const sessionNo = index + 1;
+    const profile = getMusicCatalogProfile(index);
     const musicMedia = musicMediaUrls.length > 0
       ? musicMediaUrls[index % musicMediaUrls.length]
       : '';
@@ -186,13 +163,13 @@ function buildDummyTasks() {
     tasks.push({
       taskId: `music-${sessionNo}`,
       sortOrder,
-      title: `Music Session ${sessionNo}`,
-      artist: musicArtists[index % musicArtists.length],
+      title: profile.title,
+      artist: profile.artist,
       duration: toDuration(30 + ((index % 6) * 4 + 6)),
       reward: Number((0.62 + (index % 8) * 0.04).toFixed(2)),
       type: 'Music',
       status: statusFromIndex(index),
-      mood: musicMoods[index % musicMoods.length],
+      mood: profile.mood,
       coverImage,
       mediaUrl: musicMedia,
       reach: reachFromIndex(index),
@@ -205,17 +182,18 @@ function buildDummyTasks() {
   artCoverUrls.forEach((coverImage, index) => {
     const sessionNo = index + 1;
     const globalIndex = imageCoverUrls.length + index;
+    const profile = getArtCatalogProfile(index);
 
     tasks.push({
       taskId: `art-${sessionNo}`,
       sortOrder,
-      title: `Art Session ${sessionNo}`,
-      artist: artArtists[index % artArtists.length],
+      title: profile.title,
+      artist: profile.artist,
       duration: toDuration(16 + ((index % 4) * 3 + 2)),
       reward: Number((0.45 + (index % 7) * 0.05).toFixed(2)),
       type: 'Art',
       status: statusFromIndex(globalIndex),
-      mood: artMoods[index % artMoods.length],
+      mood: profile.mood,
       coverImage,
       mediaUrl: '',
       reach: reachFromIndex(globalIndex),
@@ -230,18 +208,19 @@ function buildDummyTasks() {
   for (let index = 0; index < adCount; index += 1) {
     const sessionNo = index + 1;
     const globalIndex = imageCoverUrls.length + artCoverUrls.length + index;
+    const profile = getAdCatalogProfile(index);
     const mediaUrl = adMediaUrls.length > 0 ? adMediaUrls[index % adMediaUrls.length] : '';
 
     tasks.push({
       taskId: `ad-${sessionNo}`,
       sortOrder,
-      title: `Sponsored Slot ${sessionNo}`,
-      artist: 'Brand Partner',
+      title: profile.title,
+      artist: profile.artist,
       duration: toDuration(15 + (index % 3) * 5),
       reward: Number((0.45 + (index % 4) * 0.08).toFixed(2)),
       type: 'Ads',
       status: statusFromIndex(globalIndex),
-      mood: adMoods[index % adMoods.length],
+      mood: profile.mood,
       coverImage: adCovers[index % adCovers.length],
       mediaUrl,
       reach: reachFromIndex(globalIndex),
@@ -280,13 +259,13 @@ function mapTaskDoc(doc) {
 
   return {
     id: doc.taskId,
-    title: doc.title,
-    artist: doc.artist,
+    title: resolveTaskTitle(doc.type, doc.taskId, doc.title),
+    artist: resolveTaskArtist(doc.type, doc.taskId, doc.title, doc.artist),
     duration: doc.duration,
     reward: Number(doc.reward || 0),
     type: doc.type,
     status: doc.status,
-    mood: doc.mood,
+    mood: resolveTaskMood(doc.type, doc.taskId, doc.title, doc.mood),
     coverImage: mappedCoverImage || doc.coverImage,
     mediaUrl: mappedMediaUrl || undefined,
     reach: doc.reach,
@@ -299,16 +278,17 @@ function mapTaskDoc(doc) {
 function buildGeneratedAdTask(index, mediaUrl, fallbackCover) {
   const slotNumber = index + 1;
   const reward = Number((0.45 + ((index % 6) * 0.06)).toFixed(2));
+  const profile = getAdCatalogProfile(index);
 
   return {
     id: `ad-generated-${slotNumber}`,
-    title: `Sponsored Slot ${slotNumber}`,
-    artist: 'Brand Partner',
+    title: profile.title,
+    artist: profile.artist,
     duration: toDuration(15 + (index % 4) * 5),
     reward,
     type: 'Ads',
     status: 'available',
-    mood: adMoods[index % adMoods.length],
+    mood: profile.mood,
     coverImage: fallbackCover,
     mediaUrl,
     reach: reachFromIndex(100 + index),

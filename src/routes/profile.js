@@ -1,12 +1,12 @@
 ﻿const path = require('path');
 const fs = require('fs/promises');
-const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const express = require('express');
 
 const TaskCompletion = require('../models/TaskCompletion');
 const { requireAuth } = require('../middleware/auth');
 const { toPublicUser } = require('../services/auth-service');
+const { uploadProfileAvatar } = require('../services/cloudinary-upload');
 const {
   isSupportedPaymentMethod,
   normalizePaymentMethod,
@@ -105,6 +105,21 @@ function parseDataUrl(dataUrl) {
   };
 }
 
+async function removeLocalAvatar(avatarUrl) {
+  const previousAvatarUrl = String(avatarUrl || '');
+  if (!previousAvatarUrl.startsWith('/media/avatars/')) {
+    return;
+  }
+
+  const previousFile = path.basename(previousAvatarUrl);
+  if (!previousFile) {
+    return;
+  }
+
+  const previousPath = path.join(avatarsDirectory, previousFile);
+  await fs.unlink(previousPath).catch(() => undefined);
+}
+
 function getProfileStats(user, aggregateResult) {
   const aggregate = aggregateResult || {
     totalEarnings: 0,
@@ -188,14 +203,6 @@ router.patch('/', requireAuth, async (req, res, next) => {
   try {
     const payload = req.body && typeof req.body === 'object' ? req.body : {};
 
-    if ('name' in payload) {
-      const name = clampText(payload.name, 80);
-      if (name.length < 2) {
-        return res.status(400).json({ message: 'Name should be at least 2 characters' });
-      }
-      req.user.name = name;
-    }
-
     if ('phone' in payload) {
       req.user.phone = clampText(payload.phone, 30);
     }
@@ -270,7 +277,8 @@ router.post('/password', requireAuth, async (req, res, next) => {
 
 router.post('/avatar', requireAuth, async (req, res, next) => {
   try {
-    const parsedImage = parseDataUrl(req.body?.imageDataUrl);
+    const imageDataUrl = req.body?.imageDataUrl;
+    const parsedImage = parseDataUrl(imageDataUrl);
 
     if (!parsedImage) {
       return res.status(400).json({ message: 'A valid image is required' });
@@ -282,24 +290,16 @@ router.post('/avatar', requireAuth, async (req, res, next) => {
         .json({ message: `Avatar should be ${Math.floor(PROFILE_AVATAR_MAX_BYTES / (1024 * 1024))}MB or less` });
     }
 
-    await fs.mkdir(avatarsDirectory, { recursive: true });
-
-    const fileName = `${req.user._id}-${Date.now()}-${crypto.randomBytes(4).toString('hex')}${parsedImage.extension}`;
-    const filePath = path.join(avatarsDirectory, fileName);
-
-    await fs.writeFile(filePath, parsedImage.buffer);
-
     const previousAvatarUrl = String(req.user.avatarUrl || '');
-    if (previousAvatarUrl.startsWith('/media/avatars/')) {
-      const previousFile = path.basename(previousAvatarUrl);
-      if (previousFile && previousFile !== fileName) {
-        const previousPath = path.join(avatarsDirectory, previousFile);
-        await fs.unlink(previousPath).catch(() => undefined);
-      }
-    }
+    const uploadedAvatar = await uploadProfileAvatar({
+      userId: req.user._id,
+      imageDataUrl,
+      fileName: req.body?.fileName,
+    });
 
-    req.user.avatarUrl = `/media/avatars/${fileName}`;
+    req.user.avatarUrl = uploadedAvatar.url;
     await req.user.save();
+    await removeLocalAvatar(previousAvatarUrl);
 
     res.json({
       message: 'Profile photo updated',

@@ -6,6 +6,10 @@ const Task = require('../models/Task');
 const TaskCompletion = require('../models/TaskCompletion');
 const { syncAllContent, mapMusicDoc, mapAdDoc } = require('../services/sync-content');
 const { listTasks, seedDummyTasks } = require('../services/task-service');
+const {
+  resolveTaskArtist,
+  resolveTaskTitle,
+} = require('../services/task-catalog-metadata');
 const { requireAdmin, requireAuth } = require('../middleware/auth');
 
 const router = express.Router();
@@ -231,16 +235,24 @@ router.post('/tasks/complete', requireAuth, async (req, res, next) => {
     const sourceTask = sourceTaskId ? await Task.findOne({ taskId: sourceTaskId }).lean() : null;
     const fallbackReward = Math.min(MAX_TASK_REWARD_USD, Math.max(0, Number(rewardValue.toFixed(2))));
     const reward = resolveRewardForTier(Number(sourceTask?.reward ?? fallbackReward), req.user);
-    const normalizedTitle = String(sourceTask?.title || title).trim();
-    const normalizedArtist = String(sourceTask?.artist || artist).trim();
     const normalizedType = String(sourceTask?.type || type).trim();
-
-    if (!normalizedTitle) {
-      return res.status(400).json({ message: 'Task title is required' });
-    }
 
     if (!TASK_TYPES.has(normalizedType)) {
       return res.status(400).json({ message: 'Valid task type is required' });
+    }
+
+    const rawTitle = String(sourceTask?.title || title).trim();
+    const rawArtist = String(sourceTask?.artist || artist).trim();
+    const normalizedTitle = resolveTaskTitle(normalizedType, sourceTaskId || sessionTaskId, rawTitle);
+    const normalizedArtist = resolveTaskArtist(
+      normalizedType,
+      sourceTaskId || sessionTaskId,
+      rawTitle,
+      rawArtist
+    );
+
+    if (!normalizedTitle) {
+      return res.status(400).json({ message: 'Task title is required' });
     }
 
     const dayKey =
