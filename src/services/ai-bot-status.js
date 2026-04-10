@@ -20,12 +20,14 @@ function addMonths(fromDate = new Date(), months = 1) {
 }
 
 function getAIBotSubscriptionState(user, now = new Date()) {
+  const verified =
+    !user?.aiBotVerificationStatus || user.aiBotVerificationStatus === 'verified';
   const nowMs = now.getTime();
   const activatedAtMs = toTimestamp(user?.aiBotActivatedAt);
   const expiresAtMs = toTimestamp(user?.aiBotExpiresAt);
   const hasExpiry = Number.isFinite(expiresAtMs);
   const hasPurchased = Boolean(user?.aiBotEnabled) || Number.isFinite(activatedAtMs);
-  const active = Boolean(hasPurchased) && (!hasExpiry || expiresAtMs > nowMs);
+  const active = Boolean(hasPurchased) && verified && (!hasExpiry || expiresAtMs > nowMs);
   const expired = Boolean(hasPurchased) && hasExpiry && expiresAtMs <= nowMs;
   const remainingDays = hasExpiry && active
     ? Math.max(0, Math.ceil((expiresAtMs - nowMs) / (24 * 60 * 60 * 1000)))
@@ -36,6 +38,7 @@ function getAIBotSubscriptionState(user, now = new Date()) {
     hasPurchased,
     active,
     expired,
+    verified,
     remainingDays,
     expiresAt: hasExpiry ? new Date(expiresAtMs) : null,
   };
@@ -98,6 +101,10 @@ function requiresAIBotCheckpoint(user, now = new Date()) {
 
 function getAIBotStatusLabel(user, now = new Date()) {
   const subscription = getAIBotSubscriptionState(user, now);
+
+  if (user?.aiBotEnabled && !subscription.verified) {
+    return 'Unverified';
+  }
 
   if (user?.aiBotEnabled && subscription.expired) {
     return 'Expired';

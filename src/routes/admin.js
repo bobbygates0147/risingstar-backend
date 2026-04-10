@@ -134,6 +134,10 @@ router.get('/overview', requireAuth, requireAdmin, async (req, res, next) => {
       tier: user.tier || (user.role === 'admin' ? 'Admin' : 'Tier 1'),
       status: user.isActive ? 'Active' : 'Suspended',
       role: user.role,
+      aiBotStatus: user.aiBotEnabled ? 'Active' : 'Inactive',
+      aiBotVerificationStatus: user.aiBotVerificationStatus || 'verified',
+      aiBotPaymentTxHash: user.aiBotPaymentTxHash || user.aiBotPaymentReference || '',
+      aiBotProofUrl: toProofUrl(user.aiBotPaymentProofFile) || '',
     }));
 
     const transactions = completions.slice(0, 10).map((completion) => {
@@ -336,6 +340,60 @@ router.post('/withdrawals/:requestId/reject', requireAuth, requireAdmin, async (
     return res.json({
       message: 'Withdrawal rejected',
       request: mapWithdrawalRequest(request),
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+router.post('/ai-bot/:userId/verify', requireAuth, requireAdmin, async (req, res, next) => {
+  try {
+    const userId = String(req.params.userId || '').trim();
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.aiBotVerificationStatus = 'verified';
+    user.aiBotVerifiedAt = new Date();
+    user.aiBotVerifiedBy = req.user._id;
+    await user.save();
+
+    return res.json({
+      message: 'AI Bot payment verified',
+      user: {
+        id: String(user._id),
+        aiBotVerificationStatus: user.aiBotVerificationStatus,
+        aiBotVerifiedAt: user.aiBotVerifiedAt,
+      },
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+router.post('/ai-bot/:userId/reject', requireAuth, requireAdmin, async (req, res, next) => {
+  try {
+    const userId = String(req.params.userId || '').trim();
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.aiBotVerificationStatus = 'rejected';
+    user.aiBotVerifiedAt = new Date();
+    user.aiBotVerifiedBy = req.user._id;
+    await user.save();
+
+    return res.json({
+      message: 'AI Bot payment rejected',
+      user: {
+        id: String(user._id),
+        aiBotVerificationStatus: user.aiBotVerificationStatus,
+        aiBotVerifiedAt: user.aiBotVerifiedAt,
+      },
     });
   } catch (error) {
     return next(error);

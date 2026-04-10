@@ -1,4 +1,4 @@
-const SUPPORTED_PAYMENT_METHODS = ['crypto'];
+const SUPPORTED_PAYMENT_METHODS = ['crypto', 'wallet'];
 
 function toUsd(value) {
   return Number(value.toFixed(2));
@@ -86,6 +86,11 @@ function isSupportedPaymentMethod(value) {
   return parsePaymentMethods().includes(normalized);
 }
 
+function isSupportedAIBotPaymentMethod(value) {
+  const normalized = normalizePaymentMethod(value);
+  return normalized === 'wallet' || isSupportedPaymentMethod(normalized);
+}
+
 function getSignupPricingConfig() {
   const paymentMethods = parsePaymentMethods();
 
@@ -118,6 +123,7 @@ function getSignupPricingConfig() {
 
 module.exports = {
   getSignupPricingConfig,
+  isSupportedAIBotPaymentMethod,
   isSupportedPaymentMethod,
   normalizePaymentMethod,
   resolveTier,
