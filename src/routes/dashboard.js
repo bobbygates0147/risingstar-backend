@@ -31,7 +31,6 @@ const DAILY_LIMIT_BY_TIER = {
   tier2: parseEnvInteger('DAILY_TASK_LIMIT_TIER2', 12, 1, 120),
   tier3: parseEnvInteger('DAILY_TASK_LIMIT_TIER3', 16, 1, 150),
 };
-const DEPOSIT_EXTRA_TASKS_MAX = parseEnvInteger('DEPOSIT_EXTRA_TASKS_MAX', 200, 0, 2000);
 
 function resolveTierId(user) {
   if (user.role === 'admin') {
@@ -55,15 +54,12 @@ function resolveTierId(user) {
 
 function getDailyLimit(user) {
   const tierLimit = DAILY_LIMIT_BY_TIER[resolveTierId(user)] || DAILY_LIMIT_BY_TIER.tier1;
-  const extraTaskSlots = Math.max(
+  const creditSlots = Math.max(
     0,
-    Math.min(
-      DEPOSIT_EXTRA_TASKS_MAX,
-      Number.parseInt(String(user.extraTaskSlots || 0), 10) || 0
-    )
+    Number.parseInt(String(user.taskCredits || 0), 10) || 0
   );
 
-  return tierLimit + extraTaskSlots;
+  return tierLimit + creditSlots;
 }
 
 function getNextTierLabel(user) {

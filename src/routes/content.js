@@ -1,9 +1,13 @@
+const path = require('path');
+const crypto = require('crypto');
+const fs = require('fs/promises');
 const express = require('express');
 
 const Music = require('../models/Music');
 const Ad = require('../models/Ad');
 const Task = require('../models/Task');
 const TaskCompletion = require('../models/TaskCompletion');
+const TaskPackPurchase = require('../models/TaskPackPurchase');
 const { syncAllContent, mapMusicDoc, mapAdDoc } = require('../services/sync-content');
 const { listTasks, seedDummyTasks } = require('../services/task-service');
 const {
@@ -15,6 +19,64 @@ const { requireAdmin, requireAuth } = require('../middleware/auth');
 const router = express.Router();
 const TASK_TYPES = new Set(['Music', 'Ads', 'Art']);
 const MAX_TASK_REWARD_USD = 1;
+const DEFAULT_TASK_PACKS = [
+  { id: 'pack-5', label: '5 tasks', tasks: 5, priceUsd: 2 },
+  { id: 'pack-10', label: '10 tasks', tasks: 10, priceUsd: 4 },
+  { id: 'pack-25', label: '25 tasks', tasks: 25, priceUsd: 10 },
+  { id: 'pack-50', label: '50 tasks', tasks: 50, priceUsd: 20 },
+  { id: 'pack-75', label: '75 tasks', tasks: 75, priceUsd: 30 },
+  { id: 'pack-100', label: '100 tasks', tasks: 100, priceUsd: 40 },
+  { id: 'pack-125', label: '125 tasks', tasks: 125, priceUsd: 50 },
+];
+const TASK_PACKS = (() => {
+  const raw = String(process.env.TASK_PACKS || '').trim();
+  if (!raw) {
+    return DEFAULT_TASK_PACKS;
+  }
+
+  try {
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) {
+      return DEFAULT_TASK_PACKS;
+    }
+
+    const normalized = parsed
+      .map((item) => {
+        if (!item || typeof item !== 'object') {
+          return null;
+        }
+
+        const pack = item;
+        const id = String(pack.id || '').trim();
+        const label = String(pack.label || '').trim();
+        const tasks = Number(pack.tasks || 0);
+        const priceUsd = Number(pack.priceUsd || 0);
+
+        if (!id || !label || !Number.isFinite(tasks) || tasks <= 0 || !Number.isFinite(priceUsd) || priceUsd <= 0) {
+          return null;
+        }
+
+        return { id, label, tasks, priceUsd };
+      })
+      .filter((item) => item !== null);
+
+    return normalized.length > 0 ? normalized : DEFAULT_TASK_PACKS;
+  } catch {
+    return DEFAULT_TASK_PACKS;
+  }
+})();
+const TASK_PACK_PROOF_DIR = path.resolve(__dirname, '..', '..', 'downloads', 'task-pack-proofs');
+const rawPackProofLimit = Number.parseInt(process.env.TASK_PACK_PROOF_MAX_BYTES || '', 10);
+const TASK_PACK_PROOF_MAX_BYTES = Number.isFinite(rawPackProofLimit)
+  ? Math.min(Math.max(rawPackProofLimit, 200 * 1024), 10 * 1024 * 1024)
+  : 4 * 1024 * 1024;
+const SUPPORTED_PACK_PROOF_TYPES = new Map([
+  ['image/jpeg', '.jpg'],
+  ['image/jpg', '.jpg'],
+  ['image/png', '.png'],
+  ['image/webp', '.webp'],
+  ['application/pdf', '.pdf'],
+]);
 
 function parseEnvInteger(name, fallback, min, max) {
   const parsed = Number.parseInt(process.env[name] || '', 10);
@@ -41,7 +103,6 @@ const DAILY_LIMIT_BY_TIER = {
   tier2: parseEnvInteger('DAILY_TASK_LIMIT_TIER2', 12, 1, 120),
   tier3: parseEnvInteger('DAILY_TASK_LIMIT_TIER3', 16, 1, 150),
 };
-const DEPOSIT_EXTRA_TASKS_MAX = parseEnvInteger('DEPOSIT_EXTRA_TASKS_MAX', 200, 0, 2000);
 
 const TASK_REWARD_MULTIPLIER_BY_TIER = {
   tier1: parseEnvFloat('TASK_REWARD_MULTIPLIER_TIER1', 0.55, 0.1, 2),
@@ -108,17 +169,64 @@ function resolveTierId(user) {
   return 'tier1';
 }
 
+function getTaskPack(packId) {
+  return TASK_PACKS.find((pack) => pack.id === packId) || null;
+}
+
+function parseProofDataUrl(dataUrl) {
+  if (!dataUrl || typeof dataUrl !== 'string') {
+    return null;
+  }
+
+  const raw = dataUrl.trim();
+  if (!raw.toLowerCase().startsWith('data:')) {
+    return null;
+  }
+
+  const commaIndex = raw.indexOf(',');
+  if (commaIndex === -1) {
+    return null;
+  }
+
+  const header = raw.slice(5, commaIndex);
+  const payload = raw.slice(commaIndex + 1);
+  const headerParts = header.split(';').filter(Boolean);
+  const mimeType = (headerParts[0] || '').toLowerCase();
+  const isBase64 = headerParts.some((part) => part.toLowerCase() === 'base64');
+
+  if (!mimeType || !isBase64 || !SUPPORTED_PACK_PROOF_TYPES.has(mimeType)) {
+    return null;
+  }
+
+  const base64Value = payload.replace(/\s+/g, '');
+
+  let buffer;
+
+  try {
+    buffer = Buffer.from(base64Value, 'base64');
+  } catch {
+    return null;
+  }
+
+  if (!buffer || buffer.length === 0) {
+    return null;
+  }
+
+  return {
+    mimeType,
+    extension: SUPPORTED_PACK_PROOF_TYPES.get(mimeType),
+    buffer,
+  };
+}
+
 function getDailyLimit(user) {
   const tierLimit = DAILY_LIMIT_BY_TIER[resolveTierId(user)] || DAILY_LIMIT_BY_TIER.tier1;
-  const extraTaskSlots = Math.max(
+  const creditSlots = Math.max(
     0,
-    Math.min(
-      DEPOSIT_EXTRA_TASKS_MAX,
-      Number.parseInt(String(user.extraTaskSlots || 0), 10) || 0
-    )
+    Number.parseInt(String(user.taskCredits || 0), 10) || 0
   );
 
-  return tierLimit + extraTaskSlots;
+  return tierLimit + creditSlots;
 }
 
 function resolveRewardForTier(baseReward, user) {
@@ -203,6 +311,136 @@ router.get('/tasks/completions', requireAuth, async (req, res, next) => {
   }
 });
 
+router.get('/tasks/packs', requireAuth, (req, res) => {
+  res.json({ packs: TASK_PACKS });
+});
+
+router.get('/tasks/packs/history', requireAuth, async (req, res, next) => {
+  try {
+    const statusFilter = String(req.query?.status || '').trim();
+    const limitRaw = Number.parseInt(String(req.query?.limit || ''), 10);
+    const limit = Number.isFinite(limitRaw) ? Math.min(Math.max(limitRaw, 1), 50) : 12;
+
+    const filter = {
+      userId: req.user._id,
+      ...(statusFilter ? { status: statusFilter } : {}),
+    };
+
+    const purchases = await TaskPackPurchase.find(filter)
+      .sort({ requestedAt: -1, createdAt: -1 })
+      .limit(limit)
+      .lean();
+
+    const history = purchases.map((purchase) => ({
+      id: String(purchase._id),
+      packLabel: purchase.packLabel || '',
+      tasks: Number(purchase.tasks || 0),
+      priceUsd: Number(purchase.priceUsd || 0),
+      status: purchase.status || 'Pending',
+      requestedAt: purchase.requestedAt || purchase.createdAt || null,
+      processedAt: purchase.processedAt || null,
+    }));
+
+    return res.json({ history });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+router.post('/tasks/purchase-pack', requireAuth, async (req, res, next) => {
+  try {
+    const packId = String(req.body?.packId || '').trim();
+    const paymentMethod = String(req.body?.paymentMethod || '').trim().toLowerCase();
+    const paymentTxHash = String(req.body?.paymentTxHash || '').trim();
+    const paymentNetworkRaw = String(req.body?.paymentNetwork || '').trim();
+    const paymentProofDataUrl = req.body?.paymentProofDataUrl;
+    const pack = getTaskPack(packId);
+
+    if (!pack) {
+      return res.status(400).json({ message: 'Invalid task pack selected' });
+    }
+
+    if (paymentMethod !== 'crypto') {
+      return res.status(400).json({ message: 'Crypto payment is required for task packs' });
+    }
+
+    let proofFile = '';
+    let status = 'Pending';
+
+    if (!paymentTxHash || paymentTxHash.length < 8) {
+      return res.status(400).json({ message: 'Transaction hash is required for crypto payments' });
+    }
+
+    const allowedNetworks = new Set([
+      'USDT-TRC20',
+      'USDT-ERC20',
+      'USDT-BEP20',
+      'BTC',
+      'ETH',
+      'SOL',
+    ]);
+    const paymentNetwork = paymentNetworkRaw.toUpperCase();
+    const normalizedNetwork = allowedNetworks.has(paymentNetwork) ? paymentNetwork : '';
+
+    if (paymentProofDataUrl) {
+      const parsed = parseProofDataUrl(paymentProofDataUrl);
+
+      if (!parsed) {
+        return res.status(400).json({ message: 'Proof of payment must be a valid image or PDF' });
+      }
+
+      if (parsed.buffer.length > TASK_PACK_PROOF_MAX_BYTES) {
+        return res.status(400).json({
+          message: `Proof file should be ${Math.floor(TASK_PACK_PROOF_MAX_BYTES / (1024 * 1024))}MB or less`,
+        });
+      }
+
+      await fs.mkdir(TASK_PACK_PROOF_DIR, { recursive: true });
+      const fileName = `${req.user._id}-${Date.now()}-${crypto.randomBytes(4).toString('hex')}${parsed.extension}`;
+      const filePath = path.join(TASK_PACK_PROOF_DIR, fileName);
+      await fs.writeFile(filePath, parsed.buffer);
+      proofFile = path.join('task-pack-proofs', fileName);
+    }
+
+    const purchase = await TaskPackPurchase.create({
+      userId: req.user._id,
+      packId: pack.id,
+      packLabel: pack.label,
+      tasks: pack.tasks,
+      priceUsd: pack.priceUsd,
+      paymentMethod,
+      paymentTxHash,
+      paymentNetwork: normalizedNetwork,
+      paymentProofFile: proofFile,
+      status,
+      requestedAt: new Date(),
+      ...(status === 'Completed' ? { processedAt: new Date(), processedBy: req.user._id } : {}),
+    });
+
+    await req.user.save();
+
+    return res.status(201).json({
+      message: 'Task pack submitted and pending verification.',
+      pack: {
+        id: pack.id,
+        tasks: pack.tasks,
+        priceUsd: pack.priceUsd,
+      },
+      purchase: {
+        id: String(purchase._id),
+        status: purchase.status,
+      },
+      wallet: {
+        balance: Number(req.user.walletBalance || 0),
+        withdrawable: Number(req.user.withdrawableBalance || 0),
+      },
+      taskCredits: Number(req.user.taskCredits || 0),
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
+
 router.post('/tasks/complete', requireAuth, async (req, res, next) => {
   try {
     const sessionTaskId = String(req.body?.sessionTaskId || '').trim();
@@ -277,6 +515,19 @@ router.post('/tasks/complete', requireAuth, async (req, res, next) => {
     }
 
     const dailyLimit = getDailyLimit(req.user);
+    const taskCredits = Number(req.user.taskCredits || 0);
+
+    if (taskCredits <= 0) {
+      return res.status(402).json({
+        message: 'No task credits available. Purchase a task pack to continue.',
+        wallet: {
+          balance: Number(req.user.walletBalance || 0),
+          withdrawable: Number(req.user.withdrawableBalance || 0),
+        },
+        taskCredits: Math.max(0, taskCredits),
+      });
+    }
+
     if (dailyLimit > 0) {
       const todayCompletionCount = await TaskCompletion.countDocuments({
         userId: req.user._id,
@@ -330,13 +581,16 @@ router.post('/tasks/complete', requireAuth, async (req, res, next) => {
       throw writeError;
     }
 
+    req.user.taskCredits = Math.max(0, taskCredits - 1);
+
     if (reward > 0) {
       req.user.walletBalance = Number((Number(req.user.walletBalance || 0) + reward).toFixed(2));
       req.user.withdrawableBalance = Number(
         (Number(req.user.withdrawableBalance || 0) + reward).toFixed(2)
       );
-      await req.user.save();
     }
+
+    await req.user.save();
 
     return res.status(201).json({
       created: true,
@@ -346,6 +600,7 @@ router.post('/tasks/complete', requireAuth, async (req, res, next) => {
         balance: Number(req.user.walletBalance || 0),
         withdrawable: Number(req.user.withdrawableBalance || 0),
       },
+      taskCredits: Number(req.user.taskCredits || 0),
     });
   } catch (error) {
     return next(error);
