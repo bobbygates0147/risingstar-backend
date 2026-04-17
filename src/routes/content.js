@@ -181,11 +181,11 @@ function getAllowedTaskTypesForTier(tierId) {
   }
 
   if (tierId === 'tier3') {
-    return new Set(['Ads']);
+    return new Set(['Music', 'Art', 'Social', 'Ads']);
   }
 
   if (tierId === 'tier2') {
-    return new Set(['Social']);
+    return new Set(['Music', 'Art', 'Social']);
   }
 
   return new Set(['Music', 'Art']);
