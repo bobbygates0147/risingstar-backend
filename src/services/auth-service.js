@@ -88,6 +88,24 @@ function normalizeTimeZone(timezone) {
   }
 }
 
+function resolveRegistrationVerificationStatus(user) {
+  if (user.role === 'admin') {
+    return 'verified';
+  }
+
+  const rawStatus = String(user.registrationVerificationStatus || '').trim().toLowerCase();
+
+  if (rawStatus === 'verified' || rawStatus === 'rejected') {
+    return rawStatus;
+  }
+
+  if (user.registrationPaidAt) {
+    return 'verified';
+  }
+
+  return 'pending';
+}
+
 function toPublicUser(user) {
   return {
     id: String(user._id),
@@ -131,6 +149,9 @@ function toPublicUser(user) {
     registrationPaymentMethod: user.registrationPaymentMethod || '',
     registrationPaymentReference: user.registrationPaymentReference || '',
     registrationPaymentAmountUsd: Number(user.registrationPaymentAmountUsd || 0),
+    registrationPaymentSubmittedAt: user.registrationPaymentSubmittedAt || null,
+    registrationVerificationStatus: resolveRegistrationVerificationStatus(user),
+    registrationVerifiedAt: user.registrationVerifiedAt || null,
     registrationPaidAt: user.registrationPaidAt || null,
     tierUpgradedAt: user.tierUpgradedAt || null,
     tierUpgradePaymentMethod: user.tierUpgradePaymentMethod || '',
@@ -220,6 +241,10 @@ async function ensureAdminUser() {
       registrationPaymentMethod: null,
       registrationPaymentReference: '',
       registrationPaymentAmountUsd: 0,
+      registrationPaymentSubmittedAt: null,
+      registrationVerificationStatus: 'verified',
+      registrationVerifiedAt: new Date(),
+      registrationVerifiedBy: null,
       registrationPaidAt: null,
       tierUpgradedAt: null,
       tierUpgradePaymentMethod: null,
@@ -256,6 +281,12 @@ async function ensureAdminUser() {
 
   if (admin.name !== 'Platform Admin') {
     admin.name = 'Platform Admin';
+    changed = true;
+  }
+
+  if (admin.registrationVerificationStatus !== 'verified') {
+    admin.registrationVerificationStatus = 'verified';
+    admin.registrationVerifiedAt = admin.registrationVerifiedAt || new Date();
     changed = true;
   }
 
@@ -378,7 +409,11 @@ async function registerUser({
     registrationPaymentMethod: normalizePaymentMethod(paymentMethodRaw),
     registrationPaymentReference: cleanPaymentReference,
     registrationPaymentAmountUsd: providedAmount,
-    registrationPaidAt: new Date(),
+    registrationPaymentSubmittedAt: new Date(),
+    registrationVerificationStatus: 'pending',
+    registrationVerifiedAt: null,
+    registrationVerifiedBy: null,
+    registrationPaidAt: null,
     tierUpgradedAt: null,
     tierUpgradePaymentMethod: null,
     tierUpgradePaymentReference: '',

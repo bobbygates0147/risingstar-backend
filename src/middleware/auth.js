@@ -41,7 +41,32 @@ function requireAdmin(req, res, next) {
   return next();
 }
 
+function isRegistrationVerified(user) {
+  if (!user) {
+    return false;
+  }
+
+  if (user.role === 'admin') {
+    return true;
+  }
+
+  const status = String(user.registrationVerificationStatus || '').trim().toLowerCase();
+  return status === 'verified' || Boolean(user.registrationPaidAt);
+}
+
+function requireRegistrationVerified(req, res, next) {
+  if (!isRegistrationVerified(req.user)) {
+    return res.status(403).json({
+      message: 'Registration deposit is pending admin confirmation.',
+      registrationVerificationStatus: req.user?.registrationVerificationStatus || 'pending',
+    });
+  }
+
+  return next();
+}
+
 module.exports = {
   requireAuth,
   requireAdmin,
+  requireRegistrationVerified,
 };

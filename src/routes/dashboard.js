@@ -6,7 +6,7 @@ const {
   getAIBotStatusLabel,
 } = require('../services/ai-bot-status');
 const TaskCompletion = require('../models/TaskCompletion');
-const { requireAuth } = require('../middleware/auth');
+const { requireAuth, requireRegistrationVerified } = require('../middleware/auth');
 const {
   resolveTaskArtist,
   resolveTaskTitle,
@@ -263,7 +263,7 @@ function buildActivityLog(completions) {
   });
 }
 
-router.get('/dashboard', requireAuth, async (req, res, next) => {
+router.get('/dashboard', requireAuth, requireRegistrationVerified, async (req, res, next) => {
   try {
     const now = new Date();
     const aiStateChanged = ensureAIBotSubscriptionState(req.user, now);
@@ -293,7 +293,7 @@ router.get('/dashboard', requireAuth, async (req, res, next) => {
   }
 });
 
-router.get('/activity/log', requireAuth, async (req, res, next) => {
+router.get('/activity/log', requireAuth, requireRegistrationVerified, async (req, res, next) => {
   try {
     const completions = await TaskCompletion.find({ userId: req.user._id })
       .sort({ completedAt: -1 })

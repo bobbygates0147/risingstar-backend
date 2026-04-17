@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { requireAuth } = require('../middleware/auth');
+const { requireAuth, requireRegistrationVerified } = require('../middleware/auth');
 const TaskCompletion = require('../models/TaskCompletion');
 const WithdrawalRequest = require('../models/WithdrawalRequest');
 const {
@@ -162,7 +162,7 @@ function mapTaskCompletionEntry(doc) {
   };
 }
 
-router.get('/summary', requireAuth, async (req, res) => {
+router.get('/summary', requireAuth, requireRegistrationVerified, async (req, res) => {
   const tierId = resolveTierId(req.user);
   const baseDailyLimit = DAILY_LIMIT_BY_TIER[tierId] || DAILY_LIMIT_BY_TIER.tier1;
   const creditSlots = Math.max(
@@ -183,7 +183,7 @@ router.get('/summary', requireAuth, async (req, res) => {
   });
 });
 
-router.get('/history', requireAuth, async (req, res, next) => {
+router.get('/history', requireAuth, requireRegistrationVerified, async (req, res, next) => {
   try {
     const limit = parseHistoryLimit(req.query?.limit);
 
@@ -215,7 +215,7 @@ router.get('/history', requireAuth, async (req, res, next) => {
   }
 });
 
-router.post('/withdraw', requireAuth, async (req, res, next) => {
+router.post('/withdraw', requireAuth, requireRegistrationVerified, async (req, res, next) => {
   try {
     const amountUsd = Number(req.body?.amountUsd);
     const network = String(req.body?.network || '')

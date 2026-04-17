@@ -14,7 +14,7 @@ const {
   resolveTaskArtist,
   resolveTaskTitle,
 } = require('../services/task-catalog-metadata');
-const { requireAdmin, requireAuth } = require('../middleware/auth');
+const { requireAdmin, requireAuth, requireRegistrationVerified } = require('../middleware/auth');
 
 const router = express.Router();
 const TASK_TYPES = new Set(['Music', 'Ads', 'Art', 'Social']);
@@ -279,7 +279,7 @@ function mapCompletionDoc(doc) {
   };
 }
 
-router.get('/music', requireAuth, async (req, res, next) => {
+router.get('/music', requireAuth, requireRegistrationVerified, async (req, res, next) => {
   try {
     const list = await Music.find().sort({ updatedAt: -1 }).lean();
     res.json(list.map(mapMusicDoc));
@@ -288,7 +288,7 @@ router.get('/music', requireAuth, async (req, res, next) => {
   }
 });
 
-router.get('/ads', requireAuth, async (req, res, next) => {
+router.get('/ads', requireAuth, requireRegistrationVerified, async (req, res, next) => {
   try {
     const list = await Ad.find().sort({ updatedAt: -1 }).lean();
     res.json(list.map(mapAdDoc));
@@ -297,7 +297,7 @@ router.get('/ads', requireAuth, async (req, res, next) => {
   }
 });
 
-router.get('/tasks', requireAuth, async (req, res, next) => {
+router.get('/tasks', requireAuth, requireRegistrationVerified, async (req, res, next) => {
   try {
     let tasks = await listTasks();
 
@@ -312,7 +312,7 @@ router.get('/tasks', requireAuth, async (req, res, next) => {
   }
 });
 
-router.get('/tasks/completions', requireAuth, async (req, res, next) => {
+router.get('/tasks/completions', requireAuth, requireRegistrationVerified, async (req, res, next) => {
   try {
     const dayKey =
       typeof req.query?.dayKey === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(req.query.dayKey)
@@ -337,11 +337,11 @@ router.get('/tasks/completions', requireAuth, async (req, res, next) => {
   }
 });
 
-router.get('/tasks/packs', requireAuth, (req, res) => {
+router.get('/tasks/packs', requireAuth, requireRegistrationVerified, (req, res) => {
   res.json({ packs: TASK_PACKS });
 });
 
-router.get('/tasks/packs/history', requireAuth, async (req, res, next) => {
+router.get('/tasks/packs/history', requireAuth, requireRegistrationVerified, async (req, res, next) => {
   try {
     const statusFilter = String(req.query?.status || '').trim();
     const limitRaw = Number.parseInt(String(req.query?.limit || ''), 10);
@@ -373,7 +373,7 @@ router.get('/tasks/packs/history', requireAuth, async (req, res, next) => {
   }
 });
 
-router.post('/tasks/purchase-pack', requireAuth, async (req, res, next) => {
+router.post('/tasks/purchase-pack', requireAuth, requireRegistrationVerified, async (req, res, next) => {
   try {
     const packId = String(req.body?.packId || '').trim();
     const paymentMethod = String(req.body?.paymentMethod || '').trim().toLowerCase();
@@ -467,7 +467,7 @@ router.post('/tasks/purchase-pack', requireAuth, async (req, res, next) => {
   }
 });
 
-router.post('/tasks/complete', requireAuth, async (req, res, next) => {
+router.post('/tasks/complete', requireAuth, requireRegistrationVerified, async (req, res, next) => {
   try {
     const sessionTaskId = String(req.body?.sessionTaskId || '').trim();
     const requestedSourceTaskId = String(req.body?.sourceTaskId || '').trim();

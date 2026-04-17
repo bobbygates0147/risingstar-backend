@@ -17,6 +17,24 @@ function toProofUrl(proofFile) {
 
 const router = express.Router();
 
+function resolveRegistrationVerificationStatus(user) {
+  if (user.role === 'admin') {
+    return 'verified';
+  }
+
+  const rawStatus = String(user.registrationVerificationStatus || '').trim().toLowerCase();
+
+  if (rawStatus === 'verified' || rawStatus === 'rejected') {
+    return rawStatus;
+  }
+
+  if (user.registrationPaidAt) {
+    return 'verified';
+  }
+
+  return 'pending';
+}
+
 function mapWithdrawalRequest(doc) {
   const userName =
     doc.userId && typeof doc.userId === 'object'
@@ -67,13 +85,26 @@ function mapTaskPackPurchase(doc) {
 
 router.get('/overview', requireAuth, requireAdmin, async (req, res, next) => {
   try {
-    const [totalUsers, totalTasks, activeUsers, totalTransactions, pendingWithdrawals, pendingTaskPacks] = await Promise.all([
+    const [totalUsers, totalTasks, activeUsers, totalTransactions, pendingWithdrawals, pendingTaskPacks, pendingRegistrations] = await Promise.all([
       User.countDocuments(),
       Task.countDocuments(),
-      User.countDocuments({ isActive: true }),
+      User.countDocuments({
+        isActive: true,
+        $or: [
+          { role: 'admin' },
+          { registrationVerificationStatus: 'verified' },
+          { registrationPaidAt: { $exists: true, $ne: null } },
+        ],
+      }),
       TaskCompletion.countDocuments(),
       WithdrawalRequest.countDocuments({ status: 'pending' }),
       TaskPackPurchase.countDocuments({ status: 'Pending' }),
+      User.countDocuments({
+        role: { $ne: 'admin' },
+        isActive: true,
+        registrationVerificationStatus: 'pending',
+        registrationPaidAt: null,
+      }),
     ]);
 
     const users = await User.find().sort({ createdAt: -1 }).limit(20).lean();
@@ -93,18 +124,35 @@ router.get('/overview', requireAuth, requireAdmin, async (req, res, next) => {
       .populate({ path: 'userId', select: 'email name', options: { lean: true } })
       .lean();
 
-    const userRows = users.map((user) => ({
-      id: String(user._id),
-      name: user.name,
-      email: user.email,
-      tier: user.tier || (user.role === 'admin' ? 'Admin' : 'Tier 1'),
-      status: user.isActive ? 'Active' : 'Suspended',
-      role: user.role,
-      aiBotStatus: user.aiBotEnabled ? 'Active' : 'Inactive',
-      aiBotVerificationStatus: user.aiBotVerificationStatus || 'verified',
-      aiBotPaymentTxHash: user.aiBotPaymentTxHash || user.aiBotPaymentReference || '',
-      aiBotProofUrl: toProofUrl(user.aiBotPaymentProofFile) || '',
-    }));
+    const userRows = users.map((user) => {
+      const registrationStatus = resolveRegistrationVerificationStatus(user);
+
+      return {
+        id: String(user._id),
+        name: user.name,
+        email: user.email,
+        tier: user.tier || (user.role === 'admin' ? 'Admin' : 'Tier 1'),
+        status: !user.isActive
+          ? 'Suspended'
+          : registrationStatus === 'verified'
+            ? 'Active'
+            : registrationStatus === 'rejected'
+              ? 'Rejected'
+              : 'Pending',
+        role: user.role,
+        registrationVerificationStatus: registrationStatus,
+        registrationPaymentReference:
+          user.registrationPaymentReference || user.registrationPaymentMethod || '',
+        registrationPaymentAmountUsd: Number(user.registrationPaymentAmountUsd || user.registrationFeeUsd || 0),
+        registrationPaymentSubmittedAt:
+          user.registrationPaymentSubmittedAt || user.createdAt || null,
+        registrationPaidAt: user.registrationPaidAt || null,
+        aiBotStatus: user.aiBotEnabled ? 'Active' : 'Inactive',
+        aiBotVerificationStatus: user.aiBotVerificationStatus || 'verified',
+        aiBotPaymentTxHash: user.aiBotPaymentTxHash || user.aiBotPaymentReference || '',
+        aiBotProofUrl: toProofUrl(user.aiBotPaymentProofFile) || '',
+      };
+    });
 
     const transactions = completions.slice(0, 10).map((completion) => {
       const ownerName =
@@ -135,6 +183,7 @@ router.get('/overview', requireAuth, requireAdmin, async (req, res, next) => {
         totalTransactions,
         pendingWithdrawals,
         pendingTaskPacks,
+        pendingRegistrations,
       },
     });
   } catch (error) {
@@ -285,6 +334,82 @@ router.post('/withdrawals/:requestId/reject', requireAuth, requireAdmin, async (
     return res.json({
       message: 'Withdrawal rejected',
       request: mapWithdrawalRequest(request),
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+router.post('/registrations/:userId/approve', requireAuth, requireAdmin, async (req, res, next) => {
+  try {
+    const userId = String(req.params.userId || '').trim();
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (user.role === 'admin') {
+      return res.status(400).json({ message: 'Admin registration is already verified' });
+    }
+
+    const currentStatus = resolveRegistrationVerificationStatus(user);
+    if (currentStatus === 'verified') {
+      return res.status(400).json({ message: 'Registration deposit is already approved' });
+    }
+
+    user.registrationVerificationStatus = 'verified';
+    user.registrationVerifiedAt = new Date();
+    user.registrationVerifiedBy = req.user._id;
+    user.registrationPaidAt = user.registrationPaidAt || new Date();
+    user.isActive = true;
+    await user.save();
+
+    return res.json({
+      message: 'Registration deposit approved. User account is live.',
+      user: {
+        id: String(user._id),
+        registrationVerificationStatus: user.registrationVerificationStatus,
+        registrationPaidAt: user.registrationPaidAt,
+      },
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+router.post('/registrations/:userId/reject', requireAuth, requireAdmin, async (req, res, next) => {
+  try {
+    const userId = String(req.params.userId || '').trim();
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (user.role === 'admin') {
+      return res.status(400).json({ message: 'Admin registration cannot be rejected' });
+    }
+
+    const currentStatus = resolveRegistrationVerificationStatus(user);
+    if (currentStatus === 'verified') {
+      return res.status(400).json({ message: 'Approved registration deposits cannot be rejected' });
+    }
+
+    user.registrationVerificationStatus = 'rejected';
+    user.registrationVerifiedAt = new Date();
+    user.registrationVerifiedBy = req.user._id;
+    user.registrationPaidAt = null;
+    user.isActive = true;
+    await user.save();
+
+    return res.json({
+      message: 'Registration deposit rejected. User remains locked from tasks.',
+      user: {
+        id: String(user._id),
+        registrationVerificationStatus: user.registrationVerificationStatus,
+        registrationPaidAt: user.registrationPaidAt,
+      },
     });
   } catch (error) {
     return next(error);

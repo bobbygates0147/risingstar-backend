@@ -47,6 +47,15 @@ const userSchema = new mongoose.Schema(
     },
     registrationPaymentReference: { type: String, default: '' },
     registrationPaymentAmountUsd: { type: Number, default: 0 },
+    registrationPaymentSubmittedAt: { type: Date, default: null },
+    registrationVerificationStatus: {
+      type: String,
+      enum: ['pending', 'verified', 'rejected'],
+      default: 'pending',
+      index: true,
+    },
+    registrationVerifiedAt: { type: Date, default: null },
+    registrationVerifiedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
     registrationPaidAt: { type: Date, default: null },
     tierUpgradedAt: { type: Date, default: null },
     tierUpgradePaymentMethod: {
