@@ -6,6 +6,7 @@ const Task = require('../models/Task');
 const TaskCompletion = require('../models/TaskCompletion');
 const WithdrawalRequest = require('../models/WithdrawalRequest');
 const TaskPackPurchase = require('../models/TaskPackPurchase');
+const { getAIBotSubscriptionState } = require('../services/ai-bot-status');
 
 function toProofUrl(proofFile) {
   if (!proofFile) {
@@ -33,6 +34,25 @@ function resolveRegistrationVerificationStatus(user) {
   }
 
   return 'pending';
+}
+
+function resolveKycVerificationStatus(user) {
+  if (user.role === 'admin') {
+    return 'verified';
+  }
+
+  const rawStatus = String(user.kycVerificationStatus || '').trim().toLowerCase();
+
+  if (
+    rawStatus === 'unverified' ||
+    rawStatus === 'pending' ||
+    rawStatus === 'verified' ||
+    rawStatus === 'rejected'
+  ) {
+    return rawStatus;
+  }
+
+  return 'unverified';
 }
 
 function mapWithdrawalRequest(doc) {
@@ -85,7 +105,16 @@ function mapTaskPackPurchase(doc) {
 
 router.get('/overview', requireAuth, requireAdmin, async (req, res, next) => {
   try {
-    const [totalUsers, totalTasks, activeUsers, totalTransactions, pendingWithdrawals, pendingTaskPacks, pendingRegistrations] = await Promise.all([
+    const [
+      totalUsers,
+      totalTasks,
+      activeUsers,
+      totalTransactions,
+      pendingWithdrawals,
+      pendingTaskPacks,
+      pendingRegistrations,
+      pendingKyc,
+    ] = await Promise.all([
       User.countDocuments(),
       Task.countDocuments(),
       User.countDocuments({
@@ -104,6 +133,26 @@ router.get('/overview', requireAuth, requireAdmin, async (req, res, next) => {
         isActive: true,
         registrationVerificationStatus: 'pending',
         registrationPaidAt: null,
+      }),
+      User.countDocuments({
+        role: { $ne: 'admin' },
+        isActive: true,
+        $and: [
+          {
+            $or: [
+              { registrationVerificationStatus: 'verified' },
+              { registrationPaidAt: { $exists: true, $ne: null } },
+            ],
+          },
+          {
+            $or: [
+              { kycVerificationStatus: { $in: ['unverified', 'pending'] } },
+              { kycVerificationStatus: { $exists: false } },
+              { kycVerificationStatus: null },
+              { kycVerificationStatus: '' },
+            ],
+          },
+        ],
       }),
     ]);
 
@@ -126,6 +175,8 @@ router.get('/overview', requireAuth, requireAdmin, async (req, res, next) => {
 
     const userRows = users.map((user) => {
       const registrationStatus = resolveRegistrationVerificationStatus(user);
+      const kycStatus = resolveKycVerificationStatus(user);
+      const aiBotSubscription = getAIBotSubscriptionState(user);
 
       return {
         id: String(user._id),
@@ -147,7 +198,10 @@ router.get('/overview', requireAuth, requireAdmin, async (req, res, next) => {
         registrationPaymentSubmittedAt:
           user.registrationPaymentSubmittedAt || user.createdAt || null,
         registrationPaidAt: user.registrationPaidAt || null,
-        aiBotStatus: user.aiBotEnabled ? 'Active' : 'Inactive',
+        kycVerificationStatus: kycStatus,
+        kycReference: user.kycReference || '',
+        kycVerifiedAt: user.kycVerifiedAt || null,
+        aiBotStatus: aiBotSubscription.active ? 'Active' : 'Inactive',
         aiBotVerificationStatus: user.aiBotVerificationStatus || 'verified',
         aiBotPaymentTxHash: user.aiBotPaymentTxHash || user.aiBotPaymentReference || '',
         aiBotProofUrl: toProofUrl(user.aiBotPaymentProofFile) || '',
@@ -184,6 +238,7 @@ router.get('/overview', requireAuth, requireAdmin, async (req, res, next) => {
         pendingWithdrawals,
         pendingTaskPacks,
         pendingRegistrations,
+        pendingKyc,
       },
     });
   } catch (error) {
@@ -409,6 +464,80 @@ router.post('/registrations/:userId/reject', requireAuth, requireAdmin, async (r
         id: String(user._id),
         registrationVerificationStatus: user.registrationVerificationStatus,
         registrationPaidAt: user.registrationPaidAt,
+      },
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+router.post('/kyc/:userId/verify', requireAuth, requireAdmin, async (req, res, next) => {
+  try {
+    const userId = String(req.params.userId || '').trim();
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (user.role === 'admin') {
+      return res.status(400).json({ message: 'Admin KYC is already verified' });
+    }
+
+    const kycReference = String(req.body?.kycReference || user.kycReference || '')
+      .trim()
+      .slice(0, 120);
+
+    user.kycVerificationStatus = 'verified';
+    user.kycVerifiedAt = new Date();
+    user.kycVerifiedBy = req.user._id;
+    user.kycReference = kycReference;
+    await user.save();
+
+    return res.json({
+      message: 'KYC verified. User can withdraw when all tier rules are met.',
+      user: {
+        id: String(user._id),
+        kycVerificationStatus: user.kycVerificationStatus,
+        kycVerifiedAt: user.kycVerifiedAt,
+        kycReference: user.kycReference,
+      },
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+router.post('/kyc/:userId/reject', requireAuth, requireAdmin, async (req, res, next) => {
+  try {
+    const userId = String(req.params.userId || '').trim();
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (user.role === 'admin') {
+      return res.status(400).json({ message: 'Admin KYC cannot be rejected' });
+    }
+
+    const kycReference = String(req.body?.kycReference || user.kycReference || '')
+      .trim()
+      .slice(0, 120);
+
+    user.kycVerificationStatus = 'rejected';
+    user.kycVerifiedAt = new Date();
+    user.kycVerifiedBy = req.user._id;
+    user.kycReference = kycReference;
+    await user.save();
+
+    return res.json({
+      message: 'KYC rejected. User remains blocked from withdrawals.',
+      user: {
+        id: String(user._id),
+        kycVerificationStatus: user.kycVerificationStatus,
+        kycVerifiedAt: user.kycVerifiedAt,
+        kycReference: user.kycReference,
       },
     });
   } catch (error) {

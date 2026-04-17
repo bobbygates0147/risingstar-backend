@@ -57,6 +57,15 @@ const userSchema = new mongoose.Schema(
     registrationVerifiedAt: { type: Date, default: null },
     registrationVerifiedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
     registrationPaidAt: { type: Date, default: null },
+    kycVerificationStatus: {
+      type: String,
+      enum: ['unverified', 'pending', 'verified', 'rejected'],
+      default: 'unverified',
+      index: true,
+    },
+    kycVerifiedAt: { type: Date, default: null },
+    kycVerifiedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+    kycReference: { type: String, default: '', trim: true },
     tierUpgradedAt: { type: Date, default: null },
     tierUpgradePaymentMethod: {
       type: String,

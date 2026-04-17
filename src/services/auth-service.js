@@ -106,6 +106,25 @@ function resolveRegistrationVerificationStatus(user) {
   return 'pending';
 }
 
+function resolveKycVerificationStatus(user) {
+  if (user.role === 'admin') {
+    return 'verified';
+  }
+
+  const rawStatus = String(user.kycVerificationStatus || '').trim().toLowerCase();
+
+  if (
+    rawStatus === 'unverified' ||
+    rawStatus === 'pending' ||
+    rawStatus === 'verified' ||
+    rawStatus === 'rejected'
+  ) {
+    return rawStatus;
+  }
+
+  return 'unverified';
+}
+
 function toPublicUser(user) {
   return {
     id: String(user._id),
@@ -153,6 +172,9 @@ function toPublicUser(user) {
     registrationVerificationStatus: resolveRegistrationVerificationStatus(user),
     registrationVerifiedAt: user.registrationVerifiedAt || null,
     registrationPaidAt: user.registrationPaidAt || null,
+    kycVerificationStatus: resolveKycVerificationStatus(user),
+    kycVerifiedAt: user.kycVerifiedAt || null,
+    kycReference: user.kycReference || '',
     tierUpgradedAt: user.tierUpgradedAt || null,
     tierUpgradePaymentMethod: user.tierUpgradePaymentMethod || '',
     tierUpgradePaymentReference: user.tierUpgradePaymentReference || '',
@@ -246,6 +268,10 @@ async function ensureAdminUser() {
       registrationVerifiedAt: new Date(),
       registrationVerifiedBy: null,
       registrationPaidAt: null,
+      kycVerificationStatus: 'verified',
+      kycVerifiedAt: new Date(),
+      kycVerifiedBy: null,
+      kycReference: 'admin',
       tierUpgradedAt: null,
       tierUpgradePaymentMethod: null,
       tierUpgradePaymentReference: '',
@@ -287,6 +313,13 @@ async function ensureAdminUser() {
   if (admin.registrationVerificationStatus !== 'verified') {
     admin.registrationVerificationStatus = 'verified';
     admin.registrationVerifiedAt = admin.registrationVerifiedAt || new Date();
+    changed = true;
+  }
+
+  if (admin.kycVerificationStatus !== 'verified') {
+    admin.kycVerificationStatus = 'verified';
+    admin.kycVerifiedAt = admin.kycVerifiedAt || new Date();
+    admin.kycReference = admin.kycReference || 'admin';
     changed = true;
   }
 
@@ -414,6 +447,10 @@ async function registerUser({
     registrationVerifiedAt: null,
     registrationVerifiedBy: null,
     registrationPaidAt: null,
+    kycVerificationStatus: 'unverified',
+    kycVerifiedAt: null,
+    kycVerifiedBy: null,
+    kycReference: '',
     tierUpgradedAt: null,
     tierUpgradePaymentMethod: null,
     tierUpgradePaymentReference: '',

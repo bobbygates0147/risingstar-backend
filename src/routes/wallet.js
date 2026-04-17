@@ -7,6 +7,7 @@ const {
   resolveTaskArtist,
   resolveTaskTitle,
 } = require('../services/task-catalog-metadata');
+const { getAIBotSubscriptionState } = require('../services/ai-bot-status');
 
 const router = express.Router();
 const SUPPORTED_NETWORKS = new Set(['TRC20', 'ERC20', 'BEP20', 'BTC', 'ETH', 'SOL']);
@@ -80,6 +81,51 @@ function resolveTierId(user) {
   }
 
   return 'tier1';
+}
+
+function resolveKycVerificationStatus(user) {
+  if (user.role === 'admin') {
+    return 'verified';
+  }
+
+  const rawStatus = String(user.kycVerificationStatus || '').trim().toLowerCase();
+
+  if (
+    rawStatus === 'unverified' ||
+    rawStatus === 'pending' ||
+    rawStatus === 'verified' ||
+    rawStatus === 'rejected'
+  ) {
+    return rawStatus;
+  }
+
+  return 'unverified';
+}
+
+function getWithdrawalEligibility(user, now = new Date()) {
+  const tierId = resolveTierId(user);
+  const kycStatus = resolveKycVerificationStatus(user);
+  const kycVerified = kycStatus === 'verified';
+  const aiBotSubscription = getAIBotSubscriptionState(user, now);
+  const requiresActiveAiBot = user.role !== 'admin' && tierId === 'tier4';
+  const aiBotActive = Boolean(aiBotSubscription.active);
+  const canWithdraw = kycVerified && (!requiresActiveAiBot || aiBotActive);
+  let message = '';
+
+  if (!kycVerified) {
+    message = 'KYC verification is required before withdrawals.';
+  } else if (requiresActiveAiBot && !aiBotActive) {
+    message = 'Tier 4 withdrawals require an active verified AI Bot subscription.';
+  }
+
+  return {
+    canWithdraw,
+    kycStatus,
+    requiresKyc: !kycVerified,
+    requiresActiveAiBot,
+    aiBotActive,
+    message,
+  };
 }
 
 function getDailyLimit(user) {
@@ -180,6 +226,7 @@ router.get('/summary', requireAuth, requireRegistrationVerified, async (req, res
       creditSlots,
       dailyLimit: getDailyLimit(req.user),
     },
+    withdrawalEligibility: getWithdrawalEligibility(req.user),
   });
 });
 
@@ -217,6 +264,17 @@ router.get('/history', requireAuth, requireRegistrationVerified, async (req, res
 
 router.post('/withdraw', requireAuth, requireRegistrationVerified, async (req, res, next) => {
   try {
+    const withdrawalEligibility = getWithdrawalEligibility(req.user);
+
+    if (!withdrawalEligibility.canWithdraw) {
+      return res.status(403).json({
+        message:
+          withdrawalEligibility.message ||
+          'Withdrawal requirements are not complete.',
+        withdrawalEligibility,
+      });
+    }
+
     const amountUsd = Number(req.body?.amountUsd);
     const network = String(req.body?.network || '')
       .trim()
