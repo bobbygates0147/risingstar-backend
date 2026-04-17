@@ -9,10 +9,13 @@ dotenv.config();
 const connectDatabase = require('./config/db');
 const contentRoutes = require('./routes/content');
 const authRoutes = require('./routes/auth');
+const currencyRoutes = require('./routes/currency');
 const dashboardRoutes = require('./routes/dashboard');
 const adminRoutes = require('./routes/admin');
 const aiBotRoutes = require('./routes/ai-bot');
+const leaderboardRoutes = require('./routes/leaderboard');
 const profileRoutes = require('./routes/profile');
+const referralsRoutes = require('./routes/referrals');
 const walletRoutes = require('./routes/wallet');
 const { ensureAdminUser } = require('./services/auth-service');
 
@@ -25,10 +28,13 @@ app.use(express.json({ limit: '8mb' }));
 app.use(morgan('dev'));
 
 app.use('/media', express.static(downloadsDir));
+app.use('/api/currency', currencyRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api', contentRoutes);
 app.use('/api', dashboardRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/referrals', referralsRoutes);
+app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/wallet', walletRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/ai-bot', aiBotRoutes);

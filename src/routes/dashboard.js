@@ -30,11 +30,12 @@ const DAILY_LIMIT_BY_TIER = {
   tier1: parseEnvInteger('DAILY_TASK_LIMIT_TIER1', 8, 1, 100),
   tier2: parseEnvInteger('DAILY_TASK_LIMIT_TIER2', 12, 1, 120),
   tier3: parseEnvInteger('DAILY_TASK_LIMIT_TIER3', 16, 1, 150),
+  tier4: parseEnvInteger('DAILY_TASK_LIMIT_TIER4', 22, 1, 200),
 };
 
 function resolveTierId(user) {
   if (user.role === 'admin') {
-    return 'tier3';
+    return 'tier4';
   }
 
   const normalizedTier = String(user.tier || '')
@@ -47,6 +48,10 @@ function resolveTierId(user) {
 
   if (normalizedTier === 'tier3' || normalizedTier === '3' || normalizedTier === 'tier 3') {
     return 'tier3';
+  }
+
+  if (normalizedTier === 'tier4' || normalizedTier === '4' || normalizedTier === 'tier 4') {
+    return 'tier4';
   }
 
   return 'tier1';
@@ -64,7 +69,7 @@ function getDailyLimit(user) {
 
 function getNextTierLabel(user) {
   if (user.role === 'admin') {
-    return 'Tier 3';
+    return 'Tier 4';
   }
 
   const tier = String(user.tier || 'Tier 1');
@@ -77,7 +82,15 @@ function getNextTierLabel(user) {
     return 'Tier 3';
   }
 
-  return 'Tier 3';
+  if (/tier\s*3/i.test(tier)) {
+    return 'Tier 4';
+  }
+
+  if (/tier\s*4/i.test(tier)) {
+    return 'Max tier';
+  }
+
+  return 'Tier 2';
 }
 
 function startOfToday(date = new Date()) {
@@ -153,11 +166,15 @@ function toActivityKind(type) {
     return 'ads';
   }
 
+  if (type === 'Social') {
+    return 'social';
+  }
+
   return 'art';
 }
 
 function toDashboardCategory(type) {
-  if (type === 'Music' || type === 'Ads' || type === 'Art') {
+  if (type === 'Music' || type === 'Ads' || type === 'Art' || type === 'Social') {
     return type;
   }
 

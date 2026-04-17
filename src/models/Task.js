@@ -9,7 +9,7 @@ const taskSchema = new mongoose.Schema(
     reward: { type: Number, required: true },
     type: {
       type: String,
-      enum: ['Music', 'Ads', 'Art'],
+      enum: ['Music', 'Ads', 'Art', 'Social'],
       required: true,
     },
     status: {
@@ -20,6 +20,7 @@ const taskSchema = new mongoose.Schema(
     mood: { type: String, default: '' },
     coverImage: { type: String, required: true },
     mediaUrl: { type: String, default: '' },
+    actionUrl: { type: String, default: '', trim: true },
     reach: { type: String, default: '0' },
     engagement: { type: String, default: '0%' },
     sortOrder: { type: Number, default: 0 },

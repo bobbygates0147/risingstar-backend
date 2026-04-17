@@ -44,3 +44,17 @@ The uploader writes `src/data/cloudinary-media-map.json`. Task responses automat
 - `GET /api/music`
 - `GET /api/ads`
 - `POST /api/sync` body: `{ "force": false }`
+
+## Referral Milestones
+
+Set referral gift thresholds in `.env`:
+
+- `REFERRAL_TIER1_TARGET=5`
+- `REFERRAL_TIER2_TARGET=10`
+- `REFERRAL_TIER3_TARGET=20`
+
+## Leadership Board
+
+Users only appear on the withdrawal leadership board after reaching the minimum approved withdrawal amount:
+
+- `LEADERBOARD_MIN_WITHDRAW_USD=500`

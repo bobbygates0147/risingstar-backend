@@ -207,6 +207,7 @@ function getZeroBasedCatalogIndex(type, taskKey, fallbackTitle) {
     Music: [/music[-_ #]*(\d+)/i, /music\s+session[-_ #]*(\d+)/i, /track[-_ #]*(\d+)/i],
     Art: [/art[-_ #]*(\d+)/i, /art\s+session[-_ #]*(\d+)/i],
     Ads: [/ad[-_ #]*(\d+)/i, /sponsored\s+slot[-_ #]*(\d+)/i],
+    Social: [/social[-_ #]*(\d+)/i, /follow[-_ #]*(\d+)/i],
   };
 
   for (const pattern of patterns[type] || []) {
@@ -234,6 +235,10 @@ function isGenericTitle(type, title) {
 
   if (type === 'Art') {
     return /^(art|artwork|art session)(?:\s*[-_#]?\s*\d+)?$/.test(normalized);
+  }
+
+  if (type === 'Social') {
+    return /^(social|follow|join|social session)(?:\s*[-_#]?\s*\d+)?$/.test(normalized);
   }
 
   return /^(ad|ads|advert|advertisement|sponsored slot|sponsor slot|video)(?:\s*[-_#]?\s*\d+)?$/.test(
@@ -301,6 +306,14 @@ function getTaskCatalogProfile(type, taskKey, fallbackTitle) {
 
   if (type === 'Ads') {
     return getAdCatalogProfile(index);
+  }
+
+  if (type === 'Social') {
+    return {
+      title: `Social Follow ${index + 1}`,
+      artist: 'Rising Star Social',
+      mood: 'Follow or join partner channel',
+    };
   }
 
   return getArtCatalogProfile(index);

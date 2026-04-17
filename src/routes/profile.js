@@ -33,6 +33,7 @@ const TIER_ORDER = {
   tier1: 1,
   tier2: 2,
   tier3: 3,
+  tier4: 4,
 };
 
 function clampText(value, maxLength = 120) {
@@ -165,6 +166,10 @@ function resolveTierIdFromLabel(value) {
 
   if (normalized === 'tier3' || normalized === '3') {
     return 'tier3';
+  }
+
+  if (normalized === 'tier4' || normalized === '4') {
+    return 'tier4';
   }
 
   return 'tier1';

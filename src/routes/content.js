@@ -17,7 +17,7 @@ const {
 const { requireAdmin, requireAuth } = require('../middleware/auth');
 
 const router = express.Router();
-const TASK_TYPES = new Set(['Music', 'Ads', 'Art']);
+const TASK_TYPES = new Set(['Music', 'Ads', 'Art', 'Social']);
 const MAX_TASK_REWARD_USD = 1;
 const DEFAULT_TASK_PACKS = [
   { id: 'pack-5', label: '5 tasks', tasks: 5, priceUsd: 2 },
@@ -102,17 +102,19 @@ const DAILY_LIMIT_BY_TIER = {
   tier1: parseEnvInteger('DAILY_TASK_LIMIT_TIER1', 8, 1, 100),
   tier2: parseEnvInteger('DAILY_TASK_LIMIT_TIER2', 12, 1, 120),
   tier3: parseEnvInteger('DAILY_TASK_LIMIT_TIER3', 16, 1, 150),
+  tier4: parseEnvInteger('DAILY_TASK_LIMIT_TIER4', 22, 1, 200),
 };
 
 const TASK_REWARD_MULTIPLIER_BY_TIER = {
   tier1: parseEnvFloat('TASK_REWARD_MULTIPLIER_TIER1', 0.55, 0.1, 2),
   tier2: parseEnvFloat('TASK_REWARD_MULTIPLIER_TIER2', 0.8, 0.1, 2),
   tier3: parseEnvFloat('TASK_REWARD_MULTIPLIER_TIER3', 1, 0.1, 2),
+  tier4: parseEnvFloat('TASK_REWARD_MULTIPLIER_TIER4', 1.2, 0.1, 2),
 };
 
 function hasRequiredTaskTypes(tasks) {
   const types = new Set(tasks.map((task) => task.type));
-  return types.has('Music') && types.has('Art') && types.has('Ads');
+  return types.has('Music') && types.has('Art') && types.has('Social') && types.has('Ads');
 }
 
 function toDayKey(date = new Date()) {
@@ -151,7 +153,7 @@ function resolveSourceTaskId(sessionTaskId, sourceTaskId) {
 
 function resolveTierId(user) {
   if (user.role === 'admin') {
-    return 'tier3';
+    return 'tier4';
   }
 
   const normalizedTier = String(user.tier || '')
@@ -166,7 +168,27 @@ function resolveTierId(user) {
     return 'tier3';
   }
 
+  if (normalizedTier === 'tier4' || normalizedTier === '4' || normalizedTier === 'tier 4') {
+    return 'tier4';
+  }
+
   return 'tier1';
+}
+
+function getAllowedTaskTypesForTier(tierId) {
+  if (tierId === 'tier4') {
+    return TASK_TYPES;
+  }
+
+  if (tierId === 'tier3') {
+    return new Set(['Ads']);
+  }
+
+  if (tierId === 'tier2') {
+    return new Set(['Social']);
+  }
+
+  return new Set(['Music', 'Art']);
 }
 
 function getTaskPack(packId) {
@@ -220,13 +242,17 @@ function parseProofDataUrl(dataUrl) {
 }
 
 function getDailyLimit(user) {
-  const tierLimit = DAILY_LIMIT_BY_TIER[resolveTierId(user)] || DAILY_LIMIT_BY_TIER.tier1;
+  const tierLimit = getBaseDailyLimit(user);
   const creditSlots = Math.max(
     0,
     Number.parseInt(String(user.taskCredits || 0), 10) || 0
   );
 
   return tierLimit + creditSlots;
+}
+
+function getBaseDailyLimit(user) {
+  return DAILY_LIMIT_BY_TIER[resolveTierId(user)] || DAILY_LIMIT_BY_TIER.tier1;
 }
 
 function resolveRewardForTier(baseReward, user) {
@@ -479,6 +505,13 @@ router.post('/tasks/complete', requireAuth, async (req, res, next) => {
       return res.status(400).json({ message: 'Valid task type is required' });
     }
 
+    const tierId = resolveTierId(req.user);
+    const allowedTaskTypes = getAllowedTaskTypesForTier(tierId);
+
+    if (!allowedTaskTypes.has(normalizedType)) {
+      return res.status(403).json({ message: `${normalizedType} tasks are not available on your current tier` });
+    }
+
     const rawTitle = String(sourceTask?.title || title).trim();
     const rawArtist = String(sourceTask?.artist || artist).trim();
     const normalizedTitle = resolveTaskTitle(normalizedType, sourceTaskId || sessionTaskId, rawTitle);
@@ -514,19 +547,10 @@ router.post('/tasks/complete', requireAuth, async (req, res, next) => {
       });
     }
 
+    const baseDailyLimit = getBaseDailyLimit(req.user);
     const dailyLimit = getDailyLimit(req.user);
     const taskCredits = Number(req.user.taskCredits || 0);
-
-    if (taskCredits <= 0) {
-      return res.status(402).json({
-        message: 'No task credits available. Purchase a task pack to continue.',
-        wallet: {
-          balance: Number(req.user.walletBalance || 0),
-          withdrawable: Number(req.user.withdrawableBalance || 0),
-        },
-        taskCredits: Math.max(0, taskCredits),
-      });
-    }
+    let shouldConsumeTaskCredit = false;
 
     if (dailyLimit > 0) {
       const todayCompletionCount = await TaskCompletion.countDocuments({
@@ -541,6 +565,19 @@ router.post('/tasks/complete', requireAuth, async (req, res, next) => {
             balance: Number(req.user.walletBalance || 0),
             withdrawable: Number(req.user.withdrawableBalance || 0),
           },
+        });
+      }
+
+      shouldConsumeTaskCredit = todayCompletionCount >= baseDailyLimit;
+
+      if (shouldConsumeTaskCredit && taskCredits <= 0) {
+        return res.status(402).json({
+          message: 'No extra task credits available. Purchase a task pack to continue past your daily tier limit.',
+          wallet: {
+            balance: Number(req.user.walletBalance || 0),
+            withdrawable: Number(req.user.withdrawableBalance || 0),
+          },
+          taskCredits: Math.max(0, taskCredits),
         });
       }
     }
@@ -581,7 +618,9 @@ router.post('/tasks/complete', requireAuth, async (req, res, next) => {
       throw writeError;
     }
 
-    req.user.taskCredits = Math.max(0, taskCredits - 1);
+    if (shouldConsumeTaskCredit) {
+      req.user.taskCredits = Math.max(0, taskCredits - 1);
+    }
 
     if (reward > 0) {
       req.user.walletBalance = Number((Number(req.user.walletBalance || 0) + reward).toFixed(2));

@@ -30,7 +30,7 @@ const taskCompletionSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ['Music', 'Ads', 'Art'],
+      enum: ['Music', 'Ads', 'Art', 'Social'],
       required: true,
       index: true,
     },

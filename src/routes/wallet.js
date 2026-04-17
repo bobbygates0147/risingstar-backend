@@ -35,6 +35,7 @@ const DAILY_LIMIT_BY_TIER = {
   tier1: parseEnvInteger('DAILY_TASK_LIMIT_TIER1', 8, 1, 100),
   tier2: parseEnvInteger('DAILY_TASK_LIMIT_TIER2', 12, 1, 120),
   tier3: parseEnvInteger('DAILY_TASK_LIMIT_TIER3', 16, 1, 150),
+  tier4: parseEnvInteger('DAILY_TASK_LIMIT_TIER4', 22, 1, 200),
 };
 
 const WITHDRAW_MIN_USD = parseEnvFloat('WITHDRAW_MIN_USD', 1, 0.1, 1000);
@@ -59,7 +60,7 @@ function formatTimeLabel(value) {
 
 function resolveTierId(user) {
   if (user.role === 'admin') {
-    return 'tier3';
+    return 'tier4';
   }
 
   const normalizedTier = String(user.tier || '')
@@ -72,6 +73,10 @@ function resolveTierId(user) {
 
   if (normalizedTier === 'tier3' || normalizedTier === '3' || normalizedTier === 'tier 3') {
     return 'tier3';
+  }
+
+  if (normalizedTier === 'tier4' || normalizedTier === '4' || normalizedTier === 'tier 4') {
+    return 'tier4';
   }
 
   return 'tier1';
@@ -145,7 +150,14 @@ function mapTaskCompletionEntry(doc) {
     amount: toUsd(doc.reward),
     status: 'Completed',
     timeLabel: formatTimeLabel(doc.completedAt || doc.createdAt),
-    kind: 'music',
+    kind:
+      doc.type === 'Ads'
+        ? 'ads'
+        : doc.type === 'Art'
+        ? 'art'
+        : doc.type === 'Social'
+        ? 'social'
+        : 'music',
     occurredAt: doc.completedAt || doc.createdAt,
   };
 }

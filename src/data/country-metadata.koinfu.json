@@ -1,0 +1,1070 @@
+[
+  {
+    "name": "Afghanistan",
+    "code": "AF",
+    "locale": "en-AF",
+    "phoneCode": "+93"
+  },
+  {
+    "name": "Albania",
+    "code": "AL",
+    "locale": "en-AL",
+    "phoneCode": "+355"
+  },
+  {
+    "name": "Algeria",
+    "code": "DZ",
+    "locale": "en-DZ",
+    "phoneCode": "+213"
+  },
+  {
+    "name": "Andorra",
+    "code": "AD",
+    "locale": "en-AD",
+    "phoneCode": "+376"
+  },
+  {
+    "name": "Angola",
+    "code": "AO",
+    "locale": "en-AO",
+    "phoneCode": "+244"
+  },
+  {
+    "name": "Argentina",
+    "code": "AR",
+    "locale": "en-AR",
+    "phoneCode": "+54"
+  },
+  {
+    "name": "Armenia",
+    "code": "AM",
+    "locale": "en-AM",
+    "phoneCode": "+374"
+  },
+  {
+    "name": "Australia",
+    "code": "AU",
+    "locale": "en-AU",
+    "phoneCode": "+61"
+  },
+  {
+    "name": "Austria",
+    "code": "AT",
+    "locale": "en-AT",
+    "phoneCode": "+43"
+  },
+  {
+    "name": "Azerbaijan",
+    "code": "AZ",
+    "locale": "en-AZ",
+    "phoneCode": "+994"
+  },
+  {
+    "name": "Bahamas",
+    "code": "BS",
+    "locale": "en-BS",
+    "phoneCode": "+1242"
+  },
+  {
+    "name": "Bahrain",
+    "code": "BH",
+    "locale": "en-BH",
+    "phoneCode": "+973"
+  },
+  {
+    "name": "Bangladesh",
+    "code": "BD",
+    "locale": "en-BD",
+    "phoneCode": "+880"
+  },
+  {
+    "name": "Barbados",
+    "code": "BB",
+    "locale": "en-BB",
+    "phoneCode": "+1246"
+  },
+  {
+    "name": "Belarus",
+    "code": "BY",
+    "locale": "en-BY",
+    "phoneCode": "+375"
+  },
+  {
+    "name": "Belgium",
+    "code": "BE",
+    "locale": "en-BE",
+    "phoneCode": "+32"
+  },
+  {
+    "name": "Belize",
+    "code": "BZ",
+    "locale": "en-BZ",
+    "phoneCode": "+501"
+  },
+  {
+    "name": "Benin",
+    "code": "BJ",
+    "locale": "en-BJ",
+    "phoneCode": "+229"
+  },
+  {
+    "name": "Bhutan",
+    "code": "BT",
+    "locale": "en-BT",
+    "phoneCode": "+975"
+  },
+  {
+    "name": "Bolivia",
+    "code": "BO",
+    "locale": "en-BO",
+    "phoneCode": "+591"
+  },
+  {
+    "name": "Bosnia and Herzegovina",
+    "code": "BA",
+    "locale": "en-BA",
+    "phoneCode": "+387"
+  },
+  {
+    "name": "Botswana",
+    "code": "BW",
+    "locale": "en-BW",
+    "phoneCode": "+267"
+  },
+  {
+    "name": "Brazil",
+    "code": "BR",
+    "locale": "en-BR",
+    "phoneCode": "+55"
+  },
+  {
+    "name": "Brunei",
+    "code": "BN",
+    "locale": "en-BN",
+    "phoneCode": "+673"
+  },
+  {
+    "name": "Bulgaria",
+    "code": "BG",
+    "locale": "en-BG",
+    "phoneCode": "+359"
+  },
+  {
+    "name": "Burkina Faso",
+    "code": "BF",
+    "locale": "en-BF",
+    "phoneCode": "+226"
+  },
+  {
+    "name": "Burundi",
+    "code": "BI",
+    "locale": "en-BI",
+    "phoneCode": "+257"
+  },
+  {
+    "name": "Cambodia",
+    "code": "KH",
+    "locale": "en-KH",
+    "phoneCode": "+855"
+  },
+  {
+    "name": "Cameroon",
+    "code": "CM",
+    "locale": "en-CM",
+    "phoneCode": "+237"
+  },
+  {
+    "name": "Canada",
+    "code": "CA",
+    "locale": "en-CA",
+    "phoneCode": "+1"
+  },
+  {
+    "name": "Cape Verde",
+    "code": "CV",
+    "locale": "en-CV",
+    "phoneCode": "+238"
+  },
+  {
+    "name": "Central African Republic",
+    "code": "CF",
+    "locale": "en-CF",
+    "phoneCode": "+236"
+  },
+  {
+    "name": "Chad",
+    "code": "TD",
+    "locale": "en-TD",
+    "phoneCode": "+235"
+  },
+  {
+    "name": "Chile",
+    "code": "CL",
+    "locale": "en-CL",
+    "phoneCode": "+56"
+  },
+  {
+    "name": "China",
+    "code": "CN",
+    "locale": "en-CN",
+    "phoneCode": "+86"
+  },
+  {
+    "name": "Colombia",
+    "code": "CO",
+    "locale": "en-CO",
+    "phoneCode": "+57"
+  },
+  {
+    "name": "Comoros",
+    "code": "KM",
+    "locale": "en-KM",
+    "phoneCode": "+269"
+  },
+  {
+    "name": "Congo",
+    "code": "CG",
+    "locale": "en-CG",
+    "phoneCode": "+242"
+  },
+  {
+    "name": "Costa Rica",
+    "code": "CR",
+    "locale": "en-CR",
+    "phoneCode": "+506"
+  },
+  {
+    "name": "Croatia",
+    "code": "HR",
+    "locale": "en-HR",
+    "phoneCode": "+385"
+  },
+  {
+    "name": "Cuba",
+    "code": "CU",
+    "locale": "en-CU",
+    "phoneCode": "+53"
+  },
+  {
+    "name": "Cyprus",
+    "code": "CY",
+    "locale": "en-CY",
+    "phoneCode": "+357"
+  },
+  {
+    "name": "Czech Republic",
+    "code": "CZ",
+    "locale": "en-CZ",
+    "phoneCode": "+420"
+  },
+  {
+    "name": "Denmark",
+    "code": "DK",
+    "locale": "en-DK",
+    "phoneCode": "+45"
+  },
+  {
+    "name": "Djibouti",
+    "code": "DJ",
+    "locale": "en-DJ",
+    "phoneCode": "+253"
+  },
+  {
+    "name": "Dominican Republic",
+    "code": "DO",
+    "locale": "en-DO",
+    "phoneCode": "+1"
+  },
+  {
+    "name": "Ecuador",
+    "code": "EC",
+    "locale": "en-EC",
+    "phoneCode": "+593"
+  },
+  {
+    "name": "Egypt",
+    "code": "EG",
+    "locale": "en-EG",
+    "phoneCode": "+20"
+  },
+  {
+    "name": "El Salvador",
+    "code": "SV",
+    "locale": "en-SV",
+    "phoneCode": "+503"
+  },
+  {
+    "name": "Estonia",
+    "code": "EE",
+    "locale": "en-EE",
+    "phoneCode": "+372"
+  },
+  {
+    "name": "Eswatini",
+    "code": "SZ",
+    "locale": "en-SZ",
+    "phoneCode": "+268"
+  },
+  {
+    "name": "Ethiopia",
+    "code": "ET",
+    "locale": "en-ET",
+    "phoneCode": "+251"
+  },
+  {
+    "name": "Fiji",
+    "code": "FJ",
+    "locale": "en-FJ",
+    "phoneCode": "+679"
+  },
+  {
+    "name": "Finland",
+    "code": "FI",
+    "locale": "en-FI",
+    "phoneCode": "+358"
+  },
+  {
+    "name": "France",
+    "code": "FR",
+    "locale": "en-FR",
+    "phoneCode": "+33"
+  },
+  {
+    "name": "Gabon",
+    "code": "GA",
+    "locale": "en-GA",
+    "phoneCode": "+241"
+  },
+  {
+    "name": "Gambia",
+    "code": "GM",
+    "locale": "en-GM",
+    "phoneCode": "+220"
+  },
+  {
+    "name": "Georgia",
+    "code": "GE",
+    "locale": "en-GE",
+    "phoneCode": "+995"
+  },
+  {
+    "name": "Germany",
+    "code": "DE",
+    "locale": "en-DE",
+    "phoneCode": "+49"
+  },
+  {
+    "name": "Ghana",
+    "code": "GH",
+    "locale": "en-GH",
+    "phoneCode": "+233"
+  },
+  {
+    "name": "Greece",
+    "code": "GR",
+    "locale": "en-GR",
+    "phoneCode": "+30"
+  },
+  {
+    "name": "Guatemala",
+    "code": "GT",
+    "locale": "en-GT",
+    "phoneCode": "+502"
+  },
+  {
+    "name": "Honduras",
+    "code": "HN",
+    "locale": "en-HN",
+    "phoneCode": "+504"
+  },
+  {
+    "name": "Hungary",
+    "code": "HU",
+    "locale": "en-HU",
+    "phoneCode": "+36"
+  },
+  {
+    "name": "Iceland",
+    "code": "IS",
+    "locale": "en-IS",
+    "phoneCode": "+354"
+  },
+  {
+    "name": "India",
+    "code": "IN",
+    "locale": "en-IN",
+    "phoneCode": "+91"
+  },
+  {
+    "name": "Indonesia",
+    "code": "ID",
+    "locale": "en-ID",
+    "phoneCode": "+62"
+  },
+  {
+    "name": "Iran",
+    "code": "IR",
+    "locale": "en-IR",
+    "phoneCode": "+98"
+  },
+  {
+    "name": "Iraq",
+    "code": "IQ",
+    "locale": "en-IQ",
+    "phoneCode": "+964"
+  },
+  {
+    "name": "Ireland",
+    "code": "IE",
+    "locale": "en-IE",
+    "phoneCode": "+353"
+  },
+  {
+    "name": "Israel",
+    "code": "IL",
+    "locale": "en-IL",
+    "phoneCode": "+972"
+  },
+  {
+    "name": "Italy",
+    "code": "IT",
+    "locale": "en-IT",
+    "phoneCode": "+39"
+  },
+  {
+    "name": "Jamaica",
+    "code": "JM",
+    "locale": "en-JM",
+    "phoneCode": "+1876"
+  },
+  {
+    "name": "Japan",
+    "code": "JP",
+    "locale": "en-JP",
+    "phoneCode": "+81"
+  },
+  {
+    "name": "Jordan",
+    "code": "JO",
+    "locale": "en-JO",
+    "phoneCode": "+962"
+  },
+  {
+    "name": "Kazakhstan",
+    "code": "KZ",
+    "locale": "en-KZ",
+    "phoneCode": "+7"
+  },
+  {
+    "name": "Kenya",
+    "code": "KE",
+    "locale": "en-KE",
+    "phoneCode": "+254"
+  },
+  {
+    "name": "Kiribati",
+    "code": "KI",
+    "locale": "en-KI",
+    "phoneCode": "+686"
+  },
+  {
+    "name": "Kuwait",
+    "code": "KW",
+    "locale": "en-KW",
+    "phoneCode": "+965"
+  },
+  {
+    "name": "Kyrgyzstan",
+    "code": "KG",
+    "locale": "en-KG",
+    "phoneCode": "+996"
+  },
+  {
+    "name": "Laos",
+    "code": "LA",
+    "locale": "en-LA",
+    "phoneCode": "+856"
+  },
+  {
+    "name": "Latvia",
+    "code": "LV",
+    "locale": "en-LV",
+    "phoneCode": "+371"
+  },
+  {
+    "name": "Lebanon",
+    "code": "LB",
+    "locale": "en-LB",
+    "phoneCode": "+961"
+  },
+  {
+    "name": "Lesotho",
+    "code": "LS",
+    "locale": "en-LS",
+    "phoneCode": "+266"
+  },
+  {
+    "name": "Liberia",
+    "code": "LR",
+    "locale": "en-LR",
+    "phoneCode": "+231"
+  },
+  {
+    "name": "Libya",
+    "code": "LY",
+    "locale": "en-LY",
+    "phoneCode": "+218"
+  },
+  {
+    "name": "Liechtenstein",
+    "code": "LI",
+    "locale": "en-LI",
+    "phoneCode": "+423"
+  },
+  {
+    "name": "Lithuania",
+    "code": "LT",
+    "locale": "en-LT",
+    "phoneCode": "+370"
+  },
+  {
+    "name": "Luxembourg",
+    "code": "LU",
+    "locale": "en-LU",
+    "phoneCode": "+352"
+  },
+  {
+    "name": "Madagascar",
+    "code": "MG",
+    "locale": "en-MG",
+    "phoneCode": "+261"
+  },
+  {
+    "name": "Malawi",
+    "code": "MW",
+    "locale": "en-MW",
+    "phoneCode": "+265"
+  },
+  {
+    "name": "Malaysia",
+    "code": "MY",
+    "locale": "en-MY",
+    "phoneCode": "+60"
+  },
+  {
+    "name": "Maldives",
+    "code": "MV",
+    "locale": "en-MV",
+    "phoneCode": "+960"
+  },
+  {
+    "name": "Mali",
+    "code": "ML",
+    "locale": "en-ML",
+    "phoneCode": "+223"
+  },
+  {
+    "name": "Malta",
+    "code": "MT",
+    "locale": "en-MT",
+    "phoneCode": "+356"
+  },
+  {
+    "name": "Mexico",
+    "code": "MX",
+    "locale": "en-MX",
+    "phoneCode": "+52"
+  },
+  {
+    "name": "Moldova",
+    "code": "MD",
+    "locale": "en-MD",
+    "phoneCode": "+373"
+  },
+  {
+    "name": "Monaco",
+    "code": "MC",
+    "locale": "en-MC",
+    "phoneCode": "+377"
+  },
+  {
+    "name": "Mongolia",
+    "code": "MN",
+    "locale": "en-MN",
+    "phoneCode": "+976"
+  },
+  {
+    "name": "Montenegro",
+    "code": "ME",
+    "locale": "en-ME",
+    "phoneCode": "+382"
+  },
+  {
+    "name": "Morocco",
+    "code": "MA",
+    "locale": "en-MA",
+    "phoneCode": "+212"
+  },
+  {
+    "name": "Mozambique",
+    "code": "MZ",
+    "locale": "en-MZ",
+    "phoneCode": "+258"
+  },
+  {
+    "name": "Myanmar",
+    "code": "MM",
+    "locale": "en-MM",
+    "phoneCode": "+95"
+  },
+  {
+    "name": "Namibia",
+    "code": "NA",
+    "locale": "en-NA",
+    "phoneCode": "+264"
+  },
+  {
+    "name": "Nauru",
+    "code": "NR",
+    "locale": "en-NR",
+    "phoneCode": "+674"
+  },
+  {
+    "name": "Nepal",
+    "code": "NP",
+    "locale": "en-NP",
+    "phoneCode": "+977"
+  },
+  {
+    "name": "Netherlands",
+    "code": "NL",
+    "locale": "en-NL",
+    "phoneCode": "+31"
+  },
+  {
+    "name": "New Zealand",
+    "code": "NZ",
+    "locale": "en-NZ",
+    "phoneCode": "+64"
+  },
+  {
+    "name": "Nicaragua",
+    "code": "NI",
+    "locale": "en-NI",
+    "phoneCode": "+505"
+  },
+  {
+    "name": "Niger",
+    "code": "NE",
+    "locale": "en-NE",
+    "phoneCode": "+227"
+  },
+  {
+    "name": "Nigeria",
+    "code": "NG",
+    "locale": "en-NG",
+    "phoneCode": "+234"
+  },
+  {
+    "name": "North Macedonia",
+    "code": "MK",
+    "locale": "en-MK",
+    "phoneCode": "+389"
+  },
+  {
+    "name": "Norway",
+    "code": "NO",
+    "locale": "en-NO",
+    "phoneCode": "+47"
+  },
+  {
+    "name": "Oman",
+    "code": "OM",
+    "locale": "en-OM",
+    "phoneCode": "+968"
+  },
+  {
+    "name": "Pakistan",
+    "code": "PK",
+    "locale": "en-PK",
+    "phoneCode": "+92"
+  },
+  {
+    "name": "Palau",
+    "code": "PW",
+    "locale": "en-PW",
+    "phoneCode": "+680"
+  },
+  {
+    "name": "Panama",
+    "code": "PA",
+    "locale": "en-PA",
+    "phoneCode": "+507"
+  },
+  {
+    "name": "Papua New Guinea",
+    "code": "PG",
+    "locale": "en-PG",
+    "phoneCode": "+675"
+  },
+  {
+    "name": "Paraguay",
+    "code": "PY",
+    "locale": "en-PY",
+    "phoneCode": "+595"
+  },
+  {
+    "name": "Peru",
+    "code": "PE",
+    "locale": "en-PE",
+    "phoneCode": "+51"
+  },
+  {
+    "name": "Philippines",
+    "code": "PH",
+    "locale": "en-PH",
+    "phoneCode": "+63"
+  },
+  {
+    "name": "Poland",
+    "code": "PL",
+    "locale": "en-PL",
+    "phoneCode": "+48"
+  },
+  {
+    "name": "Portugal",
+    "code": "PT",
+    "locale": "en-PT",
+    "phoneCode": "+351"
+  },
+  {
+    "name": "Qatar",
+    "code": "QA",
+    "locale": "en-QA",
+    "phoneCode": "+974"
+  },
+  {
+    "name": "Romania",
+    "code": "RO",
+    "locale": "en-RO",
+    "phoneCode": "+40"
+  },
+  {
+    "name": "Russia",
+    "code": "RU",
+    "locale": "en-RU",
+    "phoneCode": "+7"
+  },
+  {
+    "name": "Rwanda",
+    "code": "RW",
+    "locale": "en-RW",
+    "phoneCode": "+250"
+  },
+  {
+    "name": "Saint Kitts and Nevis",
+    "code": "KN",
+    "locale": "en-KN",
+    "phoneCode": "+1869"
+  },
+  {
+    "name": "Saint Lucia",
+    "code": "LC",
+    "locale": "en-LC",
+    "phoneCode": "+1758"
+  },
+  {
+    "name": "Saint Vincent and the Grenadines",
+    "code": "VC",
+    "locale": "en-VC",
+    "phoneCode": "+1784"
+  },
+  {
+    "name": "Samoa",
+    "code": "WS",
+    "locale": "en-WS",
+    "phoneCode": "+685"
+  },
+  {
+    "name": "San Marino",
+    "code": "SM",
+    "locale": "en-SM",
+    "phoneCode": "+378"
+  },
+  {
+    "name": "Sao Tome and Principe",
+    "code": "ST",
+    "locale": "en-ST",
+    "phoneCode": "+239"
+  },
+  {
+    "name": "Saudi Arabia",
+    "code": "SA",
+    "locale": "en-SA",
+    "phoneCode": "+966"
+  },
+  {
+    "name": "Senegal",
+    "code": "SN",
+    "locale": "en-SN",
+    "phoneCode": "+221"
+  },
+  {
+    "name": "Serbia",
+    "code": "RS",
+    "locale": "en-RS",
+    "phoneCode": "+381"
+  },
+  {
+    "name": "Seychelles",
+    "code": "SC",
+    "locale": "en-SC",
+    "phoneCode": "+248"
+  },
+  {
+    "name": "Sierra Leone",
+    "code": "SL",
+    "locale": "en-SL",
+    "phoneCode": "+232"
+  },
+  {
+    "name": "Singapore",
+    "code": "SG",
+    "locale": "en-SG",
+    "phoneCode": "+65"
+  },
+  {
+    "name": "Slovakia",
+    "code": "SK",
+    "locale": "en-SK",
+    "phoneCode": "+421"
+  },
+  {
+    "name": "Slovenia",
+    "code": "SI",
+    "locale": "en-SI",
+    "phoneCode": "+386"
+  },
+  {
+    "name": "Solomon Islands",
+    "code": "SB",
+    "locale": "en-SB",
+    "phoneCode": "+677"
+  },
+  {
+    "name": "Somalia",
+    "code": "SO",
+    "locale": "en-SO",
+    "phoneCode": "+252"
+  },
+  {
+    "name": "South Africa",
+    "code": "ZA",
+    "locale": "en-ZA",
+    "phoneCode": "+27"
+  },
+  {
+    "name": "South Sudan",
+    "code": "SS",
+    "locale": "en-SS",
+    "phoneCode": "+211"
+  },
+  {
+    "name": "Spain",
+    "code": "ES",
+    "locale": "en-ES",
+    "phoneCode": "+34"
+  },
+  {
+    "name": "Sri Lanka",
+    "code": "LK",
+    "locale": "en-LK",
+    "phoneCode": "+94"
+  },
+  {
+    "name": "Sudan",
+    "code": "SD",
+    "locale": "en-SD",
+    "phoneCode": "+249"
+  },
+  {
+    "name": "Suriname",
+    "code": "SR",
+    "locale": "en-SR",
+    "phoneCode": "+597"
+  },
+  {
+    "name": "Sweden",
+    "code": "SE",
+    "locale": "en-SE",
+    "phoneCode": "+46"
+  },
+  {
+    "name": "Switzerland",
+    "code": "CH",
+    "locale": "en-CH",
+    "phoneCode": "+41"
+  },
+  {
+    "name": "Syria",
+    "code": "SY",
+    "locale": "en-SY",
+    "phoneCode": "+963"
+  },
+  {
+    "name": "Taiwan",
+    "code": "TW",
+    "locale": "en-TW",
+    "phoneCode": "+886"
+  },
+  {
+    "name": "Tajikistan",
+    "code": "TJ",
+    "locale": "en-TJ",
+    "phoneCode": "+992"
+  },
+  {
+    "name": "Tanzania",
+    "code": "TZ",
+    "locale": "en-TZ",
+    "phoneCode": "+255"
+  },
+  {
+    "name": "Thailand",
+    "code": "TH",
+    "locale": "en-TH",
+    "phoneCode": "+66"
+  },
+  {
+    "name": "Timor-Leste",
+    "code": "TL",
+    "locale": "en-TL",
+    "phoneCode": "+670"
+  },
+  {
+    "name": "Togo",
+    "code": "TG",
+    "locale": "en-TG",
+    "phoneCode": "+228"
+  },
+  {
+    "name": "Tonga",
+    "code": "TO",
+    "locale": "en-TO",
+    "phoneCode": "+676"
+  },
+  {
+    "name": "Trinidad and Tobago",
+    "code": "TT",
+    "locale": "en-TT",
+    "phoneCode": "+1868"
+  },
+  {
+    "name": "Tunisia",
+    "code": "TN",
+    "locale": "en-TN",
+    "phoneCode": "+216"
+  },
+  {
+    "name": "Turkey",
+    "code": "TR",
+    "locale": "en-TR",
+    "phoneCode": "+90"
+  },
+  {
+    "name": "Turkmenistan",
+    "code": "TM",
+    "locale": "en-TM",
+    "phoneCode": "+993"
+  },
+  {
+    "name": "Tuvalu",
+    "code": "TV",
+    "locale": "en-TV",
+    "phoneCode": "+688"
+  },
+  {
+    "name": "Uganda",
+    "code": "UG",
+    "locale": "en-UG",
+    "phoneCode": "+256"
+  },
+  {
+    "name": "Ukraine",
+    "code": "UA",
+    "locale": "en-UA",
+    "phoneCode": "+380"
+  },
+  {
+    "name": "United Arab Emirates",
+    "code": "AE",
+    "locale": "en-AE",
+    "phoneCode": "+971"
+  },
+  {
+    "name": "United Kingdom",
+    "code": "GB",
+    "locale": "en-GB",
+    "phoneCode": "+44"
+  },
+  {
+    "name": "United States",
+    "code": "US",
+    "locale": "en-US",
+    "phoneCode": "+1"
+  },
+  {
+    "name": "Uruguay",
+    "code": "UY",
+    "locale": "en-UY",
+    "phoneCode": "+598"
+  },
+  {
+    "name": "Uzbekistan",
+    "code": "UZ",
+    "locale": "en-UZ",
+    "phoneCode": "+998"
+  },
+  {
+    "name": "Vanuatu",
+    "code": "VU",
+    "locale": "en-VU",
+    "phoneCode": "+678"
+  },
+  {
+    "name": "Vatican City",
+    "code": "VA",
+    "locale": "en-VA",
+    "phoneCode": "+379"
+  },
+  {
+    "name": "Venezuela",
+    "code": "VE",
+    "locale": "en-VE",
+    "phoneCode": "+58"
+  },
+  {
+    "name": "Vietnam",
+    "code": "VN",
+    "locale": "en-VN",
+    "phoneCode": "+84"
+  },
+  {
+    "name": "Yemen",
+    "code": "YE",
+    "locale": "en-YE",
+    "phoneCode": "+967"
+  },
+  {
+    "name": "Zambia",
+    "code": "ZM",
+    "locale": "en-ZM",
+    "phoneCode": "+260"
+  },
+  {
+    "name": "Zimbabwe",
+    "code": "ZW",
+    "locale": "en-ZW",
+    "phoneCode": "+263"
+  }
+]

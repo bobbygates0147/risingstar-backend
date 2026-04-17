@@ -9,6 +9,10 @@ const {
   resolveTier,
   toUsd,
 } = require('../config/pricing');
+const {
+  getCountryOptionByCode,
+  resolveCountrySelection,
+} = require('../data/country-currency');
 
 const SALT_ROUNDS = 10;
 
@@ -22,6 +26,51 @@ function getJwtExpiry() {
 
 function normalizeEmail(email) {
   return String(email || '').trim().toLowerCase();
+}
+
+function normalizeReferralCode(value) {
+  return String(value || '')
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, '')
+    .slice(0, 24);
+}
+
+function buildReferralCode(user, attempt = 0) {
+  const source = String(user.name || user.email || 'STAR')
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, '');
+  const prefix = (source || 'STAR').slice(0, 6);
+  const idPart = String(user._id || Date.now()).slice(-6).toUpperCase();
+  const suffix = attempt > 0 ? String(attempt) : '';
+
+  return normalizeReferralCode(`${prefix}${idPart}${suffix}`);
+}
+
+async function ensureUserReferralCode(user) {
+  const existingCode = normalizeReferralCode(user.referralCode);
+
+  if (existingCode) {
+    if (existingCode !== user.referralCode) {
+      user.referralCode = existingCode;
+      await user.save();
+    }
+
+    return existingCode;
+  }
+
+  for (let attempt = 0; attempt < 20; attempt += 1) {
+    const referralCode = buildReferralCode(user, attempt);
+    const existingUser = await User.findOne({ referralCode });
+
+    if (!existingUser || String(existingUser._id) === String(user._id)) {
+      user.referralCode = referralCode;
+      await user.save();
+      return referralCode;
+    }
+  }
+
+  throw new Error('Unable to generate referral code');
 }
 
 function normalizeTimeZone(timezone) {
@@ -46,6 +95,10 @@ function toPublicUser(user) {
     email: user.email,
     phone: user.phone || '',
     country: user.country || '',
+    countryCode: user.countryCode || '',
+    currency: user.currency || 'USD',
+    currencyName: user.currencyName || user.currency || 'USD',
+    currencySymbol: user.currencySymbol || user.currency || 'USD',
     bio: user.bio || '',
     language: user.language || 'English',
     timezone: user.timezone || 'Africa/Lagos',
@@ -98,6 +151,8 @@ function toPublicUser(user) {
     aiBotNextCheckpointAt: user.aiBotNextCheckpointAt || null,
     aiBotDailyRunsDate: user.aiBotDailyRunsDate || '',
     aiBotDailyRunsCount: Number(user.aiBotDailyRunsCount || 0),
+    referralCode: user.referralCode || '',
+    referredBy: user.referredBy ? String(user.referredBy) : '',
     createdAt: user.createdAt || null,
     updatedAt: user.updatedAt || null,
   };
@@ -132,13 +187,18 @@ async function ensureAdminUser() {
 
   let admin = await User.findOne({ email: adminEmail });
   const passwordHash = await bcrypt.hash(adminPassword, SALT_ROUNDS);
+  const defaultCountry = getCountryOptionByCode('US');
 
   if (!admin) {
     admin = await User.create({
       name: 'Platform Admin',
       email: adminEmail,
       phone: '',
-      country: '',
+      country: defaultCountry.name,
+      countryCode: defaultCountry.code,
+      currency: defaultCountry.currency,
+      currencyName: defaultCountry.currencyName,
+      currencySymbol: defaultCountry.currencySymbol,
       bio: '',
       language: 'English',
       timezone: 'Africa/Lagos',
@@ -220,6 +280,10 @@ async function registerUser({
   paymentMethod,
   paymentReference,
   paymentAmountUsd,
+  country,
+  countryCode,
+  currency,
+  referralCode,
   timezone,
 }) {
   const cleanName = String(name || '').trim();
@@ -229,6 +293,8 @@ async function registerUser({
   const paymentMethodRaw = paymentMethod;
   const cleanPaymentReference = String(paymentReference || '').trim();
   const cleanTimeZone = normalizeTimeZone(timezone);
+  const cleanReferralCode = normalizeReferralCode(referralCode);
+  const countrySelection = resolveCountrySelection({ country, countryCode, currency });
   const paymentAmount = Number(paymentAmountUsd);
   const signupPricing = getSignupPricingConfig();
 
@@ -272,13 +338,25 @@ async function registerUser({
     throw new Error('Email already registered');
   }
 
+  const referrer = cleanReferralCode
+    ? await User.findOne({ referralCode: cleanReferralCode, isActive: true })
+    : null;
+
+  if (cleanReferralCode && !referrer) {
+    throw new Error('Referral code is invalid');
+  }
+
   const passwordHash = await bcrypt.hash(cleanPassword, SALT_ROUNDS);
 
   const user = await User.create({
     name: cleanName,
     email: cleanEmail,
     phone: '',
-    country: '',
+    country: countrySelection.name,
+    countryCode: countrySelection.code,
+    currency: countrySelection.currency,
+    currencyName: countrySelection.currencyName,
+    currencySymbol: countrySelection.currencySymbol,
     bio: '',
     language: 'English',
     timezone: cleanTimeZone,
@@ -321,8 +399,12 @@ async function registerUser({
     aiBotNextCheckpointAt: null,
     aiBotDailyRunsDate: '',
     aiBotDailyRunsCount: 0,
+    referredBy: referrer ? referrer._id : null,
+    referredAt: referrer ? new Date() : null,
     isActive: true,
   });
+
+  await ensureUserReferralCode(user);
 
   return user;
 }
@@ -345,14 +427,18 @@ async function loginUser({ email, password }) {
     throw new Error('Invalid email or password');
   }
 
+  await ensureUserReferralCode(user);
+
   return user;
 }
 
 module.exports = {
   createAuthResponse,
   ensureAdminUser,
+  ensureUserReferralCode,
   getSignupPricingConfig,
   loginUser,
+  normalizeReferralCode,
   registerUser,
   toPublicUser,
 };

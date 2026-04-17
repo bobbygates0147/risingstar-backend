@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const Task = require('../models/Task');
+const { socialFollowLinks } = require('../data/social-follow-links');
 const { getCloudinaryUrl, getMappedUrlsByFolder } = require('./cloudinary-media-map');
 const {
   getAdCatalogProfile,
@@ -95,6 +96,17 @@ function pickAdCover(images) {
     getCloudinaryUrl('/images/mc21.webp'),
     getCloudinaryUrl('/images/mc22.webp'),
   ];
+}
+
+function pickSocialCover(images, index) {
+  const preferred = images.filter((value) => /mc(1[0-9]|2[0-5])\./i.test(value));
+  const source = preferred.length > 0 ? preferred : images;
+
+  if (source.length > 0) {
+    return toTaskAssetPath('images', source[index % source.length]);
+  }
+
+  return getCloudinaryUrl('/images/mc6.jpg');
 }
 
 function listAdMediaUrls() {
@@ -203,6 +215,30 @@ function buildDummyTasks() {
     sortOrder += 1;
   });
 
+  socialFollowLinks.forEach((link, index) => {
+    const sessionNo = index + 1;
+    const globalIndex = imageCoverUrls.length + artCoverUrls.length + index;
+
+    tasks.push({
+      taskId: `social-${sessionNo}`,
+      sortOrder,
+      title: link.title,
+      artist: `${link.platform} - ${link.account}`,
+      duration: toDuration(12 + (index % 4) * 3),
+      reward: Number((0.38 + (index % 8) * 0.04).toFixed(2)),
+      type: 'Social',
+      status: statusFromIndex(globalIndex),
+      mood: link.mood,
+      coverImage: pickSocialCover(imageFiles, index),
+      mediaUrl: '',
+      actionUrl: link.url,
+      reach: reachFromIndex(globalIndex),
+      engagement: engagementFromIndex(globalIndex + 4),
+    });
+
+    sortOrder += 1;
+  });
+
   const adCount = Math.max(3, adMediaUrls.length || 0);
 
   for (let index = 0; index < adCount; index += 1) {
@@ -268,6 +304,7 @@ function mapTaskDoc(doc) {
     mood: resolveTaskMood(doc.type, doc.taskId, doc.title, doc.mood),
     coverImage: mappedCoverImage || doc.coverImage,
     mediaUrl: mappedMediaUrl || undefined,
+    actionUrl: doc.actionUrl || undefined,
     reach: doc.reach,
     engagement: doc.engagement,
     createdAt: doc.createdAt,

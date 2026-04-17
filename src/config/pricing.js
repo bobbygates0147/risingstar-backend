@@ -52,6 +52,11 @@ function getRegistrationTiers() {
       label: 'Tier 3',
       feeUsd: parsePositiveUsd('TIER3_REGISTRATION_FEE_USD', 36.28),
     },
+    {
+      id: 'tier4',
+      label: 'Tier 4',
+      feeUsd: parsePositiveUsd('TIER4_REGISTRATION_FEE_USD', 119.99),
+    },
   ];
 }
 
@@ -64,6 +69,7 @@ function normalizeTierInput(value) {
   if (raw === 'tier1') return 'tier1';
   if (raw === 'tier2') return 'tier2';
   if (raw === 'tier3') return 'tier3';
+  if (raw === 'tier4') return 'tier4';
 
   return '';
 }

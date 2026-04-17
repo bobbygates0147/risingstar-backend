@@ -9,11 +9,15 @@ const {
 } = require('../services/auth-service');
 const { ensureAIBotSubscriptionState } = require('../services/ai-bot-status');
 const { requireAuth } = require('../middleware/auth');
+const { getCountryCurrencyOptions } = require('../data/country-currency');
 
 const router = express.Router();
 
 router.get('/signup-config', (req, res) => {
-  res.json(getSignupPricingConfig());
+  res.json({
+    ...getSignupPricingConfig(),
+    countries: getCountryCurrencyOptions(),
+  });
 });
 
 router.post('/signup', async (req, res, next) => {
@@ -30,9 +34,12 @@ router.post('/signup', async (req, res, next) => {
       error.message === 'Valid email is required' ||
       error.message === 'Password should be at least 4 characters' ||
       error.message === 'Valid registration tier is required' ||
+      error.message === 'Valid country is required' ||
       error.message === 'Valid payment method is required' ||
       error.message === 'Payment reference should be at least 3 characters' ||
       error.message === 'Payment amount is required' ||
+      error.message === 'Referral code is invalid' ||
+      error.message.startsWith('Currency must be ') ||
       error.message.startsWith('Payment amount must match ')
     ) {
       return res.status(400).json({ message: error.message });
