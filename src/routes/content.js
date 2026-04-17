@@ -15,10 +15,10 @@ const {
   resolveTaskTitle,
 } = require('../services/task-catalog-metadata');
 const { requireAdmin, requireAuth, requireRegistrationVerified } = require('../middleware/auth');
+const { getSignupPricingConfig } = require('../config/pricing');
 
 const router = express.Router();
 const TASK_TYPES = new Set(['Music', 'Ads', 'Art', 'Social']);
-const MAX_TASK_REWARD_USD = 1;
 const DEFAULT_TASK_PACKS = [
   { id: 'pack-5', label: '5 tasks', tasks: 5, priceUsd: 2 },
   { id: 'pack-10', label: '10 tasks', tasks: 10, priceUsd: 4 },
@@ -88,16 +88,6 @@ function parseEnvInteger(name, fallback, min, max) {
   return Math.min(Math.max(parsed, min), max);
 }
 
-function parseEnvFloat(name, fallback, min, max) {
-  const parsed = Number.parseFloat(process.env[name] || '');
-
-  if (!Number.isFinite(parsed)) {
-    return fallback;
-  }
-
-  return Math.min(Math.max(parsed, min), max);
-}
-
 const DAILY_LIMIT_BY_TIER = {
   tier1: parseEnvInteger('DAILY_TASK_LIMIT_TIER1', 8, 1, 100),
   tier2: parseEnvInteger('DAILY_TASK_LIMIT_TIER2', 12, 1, 120),
@@ -105,12 +95,8 @@ const DAILY_LIMIT_BY_TIER = {
   tier4: parseEnvInteger('DAILY_TASK_LIMIT_TIER4', 22, 1, 200),
 };
 
-const TASK_REWARD_MULTIPLIER_BY_TIER = {
-  tier1: parseEnvFloat('TASK_REWARD_MULTIPLIER_TIER1', 0.55, 0.1, 2),
-  tier2: parseEnvFloat('TASK_REWARD_MULTIPLIER_TIER2', 0.8, 0.1, 2),
-  tier3: parseEnvFloat('TASK_REWARD_MULTIPLIER_TIER3', 1, 0.1, 2),
-  tier4: parseEnvFloat('TASK_REWARD_MULTIPLIER_TIER4', 1.2, 0.1, 2),
-};
+const TASK_REWARD_BREAK_EVEN_DAYS = parseEnvInteger('TASK_REWARD_BREAK_EVEN_DAYS', 30, 1, 365);
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 function hasRequiredTaskTypes(tasks) {
   const types = new Set(tasks.map((task) => task.type));
@@ -173,6 +159,113 @@ function resolveTierId(user) {
   }
 
   return 'tier1';
+}
+
+function parseDayKeyUtcMs(dayKey) {
+  if (!isDayKey(dayKey)) {
+    return Number.NaN;
+  }
+
+  const [year, month, day] = dayKey.split('-').map((part) => Number.parseInt(part, 10));
+  return Date.UTC(year, month - 1, day);
+}
+
+function getUtcDayMs(value) {
+  if (!value) {
+    return Number.NaN;
+  }
+
+  const date = new Date(value);
+
+  if (!Number.isFinite(date.getTime())) {
+    return Number.NaN;
+  }
+
+  return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+}
+
+function getRewardStartDayMs(user) {
+  const candidates = [
+    user.registrationPaidAt,
+    user.registrationVerifiedAt,
+    user.registrationPaymentSubmittedAt,
+    user.createdAt,
+  ];
+
+  for (const candidate of candidates) {
+    const dayMs = getUtcDayMs(candidate);
+
+    if (Number.isFinite(dayMs)) {
+      return dayMs;
+    }
+  }
+
+  return getUtcDayMs(new Date());
+}
+
+function getRewardDayIndex(user, dayKey) {
+  const taskDayMs = parseDayKeyUtcMs(dayKey);
+  const startDayMs = getRewardStartDayMs(user);
+
+  if (!Number.isFinite(taskDayMs) || !Number.isFinite(startDayMs)) {
+    return 0;
+  }
+
+  return Math.max(0, Math.floor((taskDayMs - startDayMs) / DAY_MS));
+}
+
+function getTierFeeUsd(tierId) {
+  const tier = getSignupPricingConfig().tiers.find((entry) => entry.id === tierId);
+  return Number(tier?.feeUsd || 0);
+}
+
+function getTierInvestmentUsd(user, tierId) {
+  const currentTierId = resolveTierId(user);
+  const upgradeAmount = Number(user.tierUpgradePaymentAmountUsd || 0);
+
+  if (currentTierId === tierId && Number.isFinite(upgradeAmount) && upgradeAmount > 0) {
+    return upgradeAmount;
+  }
+
+  const registrationFee = Number(user.registrationFeeUsd || 0);
+
+  if (currentTierId === tierId && Number.isFinite(registrationFee) && registrationFee > 0) {
+    return registrationFee;
+  }
+
+  return getTierFeeUsd(tierId);
+}
+
+function getDailyRewardBudgetCents(user, tierId, dayKey) {
+  const investmentCents = Math.max(0, Math.round(getTierInvestmentUsd(user, tierId) * 100));
+
+  if (investmentCents <= 0) {
+    return 0;
+  }
+
+  const baseDailyCents = Math.floor(investmentCents / TASK_REWARD_BREAK_EVEN_DAYS);
+  const bonusDays = investmentCents % TASK_REWARD_BREAK_EVEN_DAYS;
+  const rewardDayIndex = getRewardDayIndex(user, dayKey);
+  return baseDailyCents + (rewardDayIndex % TASK_REWARD_BREAK_EVEN_DAYS < bonusDays ? 1 : 0);
+}
+
+function getSlotIndexFromSessionTaskId(sessionTaskId) {
+  const match = /^\d{4}-\d{2}-\d{2}-(\d+)-/.exec(String(sessionTaskId || ''));
+  const parsed = match ? Number.parseInt(match[1], 10) : 1;
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
+}
+
+function resolveRewardForTier(user, sessionTaskId, dayKey) {
+  const tierId = resolveTierId(user);
+  const baseDailyLimit = Math.max(1, getBaseDailyLimit(user));
+  const dailyBudgetCents = getDailyRewardBudgetCents(user, tierId, dayKey);
+  const baseSlotCents = Math.floor(dailyBudgetCents / baseDailyLimit);
+  const bonusSlots = dailyBudgetCents % baseDailyLimit;
+  const slotIndex = getSlotIndexFromSessionTaskId(sessionTaskId);
+  const normalizedSlotIndex = (slotIndex - 1) % baseDailyLimit;
+  const rewardCents = baseSlotCents + (normalizedSlotIndex < bonusSlots ? 1 : 0);
+
+  return Number((Math.max(0, rewardCents) / 100).toFixed(2));
 }
 
 function getAllowedTaskTypesForTier(tierId) {
@@ -253,14 +346,6 @@ function getDailyLimit(user) {
 
 function getBaseDailyLimit(user) {
   return DAILY_LIMIT_BY_TIER[resolveTierId(user)] || DAILY_LIMIT_BY_TIER.tier1;
-}
-
-function resolveRewardForTier(baseReward, user) {
-  const tierId = resolveTierId(user);
-  const multiplier = TASK_REWARD_MULTIPLIER_BY_TIER[tierId] || 1;
-  const normalizedBase = Math.max(0, Number(baseReward || 0));
-  const scaled = normalizedBase * multiplier;
-  return Number(Math.min(MAX_TASK_REWARD_USD, scaled).toFixed(2));
 }
 
 function mapCompletionDoc(doc) {
@@ -497,8 +582,6 @@ router.post('/tasks/complete', requireAuth, requireRegistrationVerified, async (
 
     const sourceTaskId = resolveSourceTaskId(sessionTaskId, requestedSourceTaskId);
     const sourceTask = sourceTaskId ? await Task.findOne({ taskId: sourceTaskId }).lean() : null;
-    const fallbackReward = Math.min(MAX_TASK_REWARD_USD, Math.max(0, Number(rewardValue.toFixed(2))));
-    const reward = resolveRewardForTier(Number(sourceTask?.reward ?? fallbackReward), req.user);
     const normalizedType = String(sourceTask?.type || type).trim();
 
     if (!TASK_TYPES.has(normalizedType)) {
@@ -530,6 +613,7 @@ router.post('/tasks/complete', requireAuth, requireRegistrationVerified, async (
       (isDayKey(requestedDayKey) && requestedDayKey) ||
       resolveDayKeyFromSessionId(sessionTaskId) ||
       toDayKey(completedAt);
+    const reward = resolveRewardForTier(req.user, sessionTaskId, dayKey);
     const existing = await TaskCompletion.findOne({
       userId: req.user._id,
       sessionTaskId,
