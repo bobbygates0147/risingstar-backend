@@ -10,7 +10,8 @@
     "sync": "node scripts/sync-content.js",
     "download": "node scripts/download-media.js",
     "seed:tasks": "node scripts/seed-tasks.js",
-    "upload:cloudinary": "node scripts/upload-media-to-cloudinary.js"
+    "upload:cloudinary": "node scripts/upload-media-to-cloudinary.js",
+    "repair:users": "node scripts/repair-user-consistency.js"
   },
   "keywords": [],
   "author": "",

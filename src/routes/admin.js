@@ -7,6 +7,10 @@ const TaskCompletion = require('../models/TaskCompletion');
 const WithdrawalRequest = require('../models/WithdrawalRequest');
 const TaskPackPurchase = require('../models/TaskPackPurchase');
 const { getAIBotSubscriptionState } = require('../services/ai-bot-status');
+const {
+  isRegistrationApproved,
+  resolveRegistrationVerificationStatus,
+} = require('../services/registration-state');
 
 function toProofUrl(proofFile) {
   if (!proofFile) {
@@ -17,24 +21,6 @@ function toProofUrl(proofFile) {
 }
 
 const router = express.Router();
-
-function resolveRegistrationVerificationStatus(user) {
-  if (user.role === 'admin') {
-    return 'verified';
-  }
-
-  const rawStatus = String(user.registrationVerificationStatus || '').trim().toLowerCase();
-
-  if (rawStatus === 'verified' || rawStatus === 'rejected') {
-    return rawStatus;
-  }
-
-  if (user.registrationPaidAt) {
-    return 'verified';
-  }
-
-  return 'pending';
-}
 
 function resolveKycVerificationStatus(user) {
   if (user.role === 'admin') {
@@ -106,55 +92,37 @@ function mapTaskPackPurchase(doc) {
 router.get('/overview', requireAuth, requireAdmin, async (req, res, next) => {
   try {
     const [
-      totalUsers,
+      usersForStats,
       totalTasks,
-      activeUsers,
       totalTransactions,
       pendingWithdrawals,
       pendingTaskPacks,
-      pendingRegistrations,
-      pendingKyc,
     ] = await Promise.all([
-      User.countDocuments(),
+      User.find()
+        .select('role isActive registrationVerificationStatus registrationPaidAt kycVerificationStatus')
+        .lean(),
       Task.countDocuments(),
-      User.countDocuments({
-        isActive: true,
-        $or: [
-          { role: 'admin' },
-          { registrationVerificationStatus: 'verified' },
-          { registrationPaidAt: { $exists: true, $ne: null } },
-        ],
-      }),
       TaskCompletion.countDocuments(),
       WithdrawalRequest.countDocuments({ status: 'pending' }),
       TaskPackPurchase.countDocuments({ status: 'Pending' }),
-      User.countDocuments({
-        role: { $ne: 'admin' },
-        isActive: true,
-        registrationVerificationStatus: 'pending',
-        registrationPaidAt: null,
-      }),
-      User.countDocuments({
-        role: { $ne: 'admin' },
-        isActive: true,
-        $and: [
-          {
-            $or: [
-              { registrationVerificationStatus: 'verified' },
-              { registrationPaidAt: { $exists: true, $ne: null } },
-            ],
-          },
-          {
-            $or: [
-              { kycVerificationStatus: { $in: ['unverified', 'pending'] } },
-              { kycVerificationStatus: { $exists: false } },
-              { kycVerificationStatus: null },
-              { kycVerificationStatus: '' },
-            ],
-          },
-        ],
-      }),
     ]);
+
+    const totalUsers = usersForStats.length;
+    const activeUsers = usersForStats.filter(
+      (user) => user.isActive && (user.role === 'admin' || isRegistrationApproved(user))
+    ).length;
+    const pendingRegistrations = usersForStats.filter((user) => {
+      return user.role !== 'admin' && user.isActive && resolveRegistrationVerificationStatus(user) === 'pending';
+    }).length;
+    const pendingKyc = usersForStats.filter((user) => {
+      const kycStatus = resolveKycVerificationStatus(user);
+      return (
+        user.role !== 'admin' &&
+        user.isActive &&
+        isRegistrationApproved(user) &&
+        (kycStatus === 'unverified' || kycStatus === 'pending')
+      );
+    }).length;
 
     const users = await User.find().sort({ createdAt: -1 }).limit(20).lean();
     const completions = await TaskCompletion.find()

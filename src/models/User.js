@@ -42,7 +42,7 @@ const userSchema = new mongoose.Schema(
     registrationFeeUsd: { type: Number, default: 0 },
     registrationPaymentMethod: {
       type: String,
-      enum: ['bank_transfer', 'paypal', 'crypto'],
+      enum: ['bank_transfer', 'paypal', 'crypto', 'wallet'],
       default: null,
     },
     registrationPaymentReference: { type: String, default: '' },
@@ -69,7 +69,7 @@ const userSchema = new mongoose.Schema(
     tierUpgradedAt: { type: Date, default: null },
     tierUpgradePaymentMethod: {
       type: String,
-      enum: ['bank_transfer', 'paypal', 'crypto'],
+      enum: ['bank_transfer', 'paypal', 'crypto', 'wallet'],
       default: null,
     },
     tierUpgradePaymentReference: { type: String, default: '' },

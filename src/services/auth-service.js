@@ -13,6 +13,7 @@ const {
   getCountryOptionByCode,
   resolveCountrySelection,
 } = require('../data/country-currency');
+const { resolveRegistrationVerificationStatus } = require('./registration-state');
 
 const SALT_ROUNDS = 10;
 
@@ -86,24 +87,6 @@ function normalizeTimeZone(timezone) {
   } catch {
     return 'Africa/Lagos';
   }
-}
-
-function resolveRegistrationVerificationStatus(user) {
-  if (user.role === 'admin') {
-    return 'verified';
-  }
-
-  const rawStatus = String(user.registrationVerificationStatus || '').trim().toLowerCase();
-
-  if (rawStatus === 'verified' || rawStatus === 'rejected') {
-    return rawStatus;
-  }
-
-  if (user.registrationPaidAt) {
-    return 'verified';
-  }
-
-  return 'pending';
 }
 
 function resolveKycVerificationStatus(user) {

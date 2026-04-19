@@ -19,15 +19,7 @@ const { getSignupPricingConfig } = require('../config/pricing');
 
 const router = express.Router();
 const TASK_TYPES = new Set(['Music', 'Ads', 'Art', 'Social']);
-const DEFAULT_TASK_PACKS = [
-  { id: 'pack-5', label: '5 tasks', tasks: 5, priceUsd: 2 },
-  { id: 'pack-10', label: '10 tasks', tasks: 10, priceUsd: 4 },
-  { id: 'pack-25', label: '25 tasks', tasks: 25, priceUsd: 10 },
-  { id: 'pack-50', label: '50 tasks', tasks: 50, priceUsd: 20 },
-  { id: 'pack-75', label: '75 tasks', tasks: 75, priceUsd: 30 },
-  { id: 'pack-100', label: '100 tasks', tasks: 100, priceUsd: 40 },
-  { id: 'pack-125', label: '125 tasks', tasks: 125, priceUsd: 50 },
-];
+const DEFAULT_TASK_PACK_SIZES = [5, 10, 25, 50, 75, 100, 125];
 const TASK_PACKS = (() => {
   const raw = String(process.env.TASK_PACKS || '').trim();
   if (!raw) {
@@ -87,6 +79,33 @@ function parseEnvInteger(name, fallback, min, max) {
 
   return Math.min(Math.max(parsed, min), max);
 }
+
+function parseEnvFloat(name, fallback, min, max) {
+  const parsed = Number.parseFloat(process.env[name] || '');
+
+  if (!Number.isFinite(parsed)) {
+    return fallback;
+  }
+
+  return Math.min(Math.max(parsed, min), max);
+}
+
+function toUsd(value) {
+  return Number(Number(value || 0).toFixed(2));
+}
+
+const TASK_PACK_PRICE_PER_TASK_USD = parseEnvFloat(
+  'TASK_PACK_PRICE_PER_TASK_USD',
+  0.4,
+  0.01,
+  1000
+);
+const DEFAULT_TASK_PACKS = DEFAULT_TASK_PACK_SIZES.map((tasks) => ({
+  id: `pack-${tasks}`,
+  label: `${tasks} tasks`,
+  tasks,
+  priceUsd: toUsd(tasks * TASK_PACK_PRICE_PER_TASK_USD),
+}));
 
 const DAILY_LIMIT_BY_TIER = {
   tier1: parseEnvInteger('DAILY_TASK_LIMIT_TIER1', 8, 1, 100),

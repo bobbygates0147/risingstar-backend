@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const { isRegistrationApproved, resolveRegistrationVerificationStatus } = require('../services/registration-state');
 
 function getJwtSecret() {
   return process.env.JWT_SECRET || 'risingstar-dev-secret-change-me';
@@ -42,23 +43,14 @@ function requireAdmin(req, res, next) {
 }
 
 function isRegistrationVerified(user) {
-  if (!user) {
-    return false;
-  }
-
-  if (user.role === 'admin') {
-    return true;
-  }
-
-  const status = String(user.registrationVerificationStatus || '').trim().toLowerCase();
-  return status === 'verified' || Boolean(user.registrationPaidAt);
+  return isRegistrationApproved(user);
 }
 
 function requireRegistrationVerified(req, res, next) {
   if (!isRegistrationVerified(req.user)) {
     return res.status(403).json({
-      message: 'Registration deposit is pending admin confirmation.',
-      registrationVerificationStatus: req.user?.registrationVerificationStatus || 'pending',
+      message: 'Your account is in review. Access will unlock shortly.',
+      registrationVerificationStatus: resolveRegistrationVerificationStatus(req.user),
     });
   }
 

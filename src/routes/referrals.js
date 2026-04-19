@@ -3,6 +3,7 @@ const express = require('express');
 const { requireAuth } = require('../middleware/auth');
 const User = require('../models/User');
 const { ensureUserReferralCode } = require('../services/auth-service');
+const { isRegistrationApproved } = require('../services/registration-state');
 
 const router = express.Router();
 
@@ -243,7 +244,7 @@ function mapReferralUser(user) {
     tier: user.tier || 'Tier 1',
     joinedAt: user.createdAt || user.referredAt || null,
     joinedLabel: formatTimeLabel(user.createdAt || user.referredAt),
-    status: user.isActive && user.registrationPaidAt ? 'Qualified' : 'Pending',
+    status: user.isActive && isRegistrationApproved(user) ? 'Qualified' : 'Pending',
   };
 }
 
@@ -251,22 +252,16 @@ router.get('/', requireAuth, async (req, res, next) => {
   try {
     const referralCode = await ensureUserReferralCode(req.user);
     const referralFilter = { referredBy: req.user._id };
-    const qualifiedReferralFilter = {
-      ...referralFilter,
-      isActive: true,
-      registrationPaidAt: { $exists: true, $ne: null },
-    };
+    const referredUsers = await User.find(referralFilter)
+      .sort({ createdAt: -1 })
+      .select('name tier createdAt referredAt isActive registrationPaidAt registrationVerificationStatus')
+      .lean();
 
-    const [totalReferrals, qualifiedReferrals, recentReferrals] =
-      await Promise.all([
-        User.countDocuments(referralFilter),
-        User.countDocuments(qualifiedReferralFilter),
-        User.find(referralFilter)
-          .sort({ createdAt: -1 })
-          .limit(8)
-          .select('name tier createdAt referredAt isActive registrationPaidAt')
-          .lean(),
-      ]);
+    const totalReferrals = referredUsers.length;
+    const qualifiedReferrals = referredUsers.filter(
+      (user) => user.isActive && isRegistrationApproved(user)
+    ).length;
+    const recentReferrals = referredUsers.slice(0, 8);
 
     const rewards = buildRewards(qualifiedReferrals, req.user);
     const nextReward = rewards.find((reward) => reward.status === 'active') || null;
